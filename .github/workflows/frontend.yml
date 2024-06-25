@@ -73,7 +73,7 @@ jobs:
           script: |
             sudo docker stop ${{ secrets.DOCKERHUB_FRONTEND_NAME }}
             sudo docker rm ${{ secrets.DOCKERHUB_FRONTEND_NAME }}
-            sudo docker run -it -d -p 3000:3000 --name ${{ secrets.DOCKERHUB_FRONTEND_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_FRONTEND_NAME }}
+            sudo docker run -it -d -p 80:3000 --name ${{ secrets.DOCKERHUB_FRONTEND_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_FRONTEND_NAME }}
 
       - name: Remove IP FROM security group
         run: |
