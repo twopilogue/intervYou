@@ -10,6 +10,6 @@ COPY / /FE/
 
 RUN npm run build
 
-CMD ["npx", "serve", "-s", "out"]
+ENTRYPOINT npm run start
 
 EXPOSE 8080
