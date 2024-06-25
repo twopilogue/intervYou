@@ -22,18 +22,62 @@ jobs:
           cd ./FE
           touch ./.env.local
           echo "${{ secrets.ENV }}" > ./.env.local
+
       - name: Install Dependencies
         run: cd ./FE && npm install
 
-      - name: Build
+      - name: Build Next.js
         run: cd ./FE && npm run build
 
-      - uses: awact/s3-action@master
+      - name: Build Docker image
+        run: |
+          cd ./FE
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_FRONTEND_NAME }} .
+
+      - name: Login Docker
+        uses: docker/login-action@v2
         with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          SOURCE_DIR: "./FE/out"
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker Hub
+        run: |
+          cd ./FE
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_FRONTEND_NAME }}
+
+      - name: Get GitHub IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Add Github Actions IP to Security group
+        run: |
+          aws ec2 authorize-security-group-ingress \
+          --group-id ${{ secrets.AWS_SG_ID }} \
+          --protocol tcp --port 22 \
+          --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
+      - name: AWS EC2 Connection
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          timeout: 60s
+          script: |
+            sudo docker stop ${{ secrets.DOCKERHUB_FRONTEND_NAME }}
+            sudo docker rm ${{ secrets.DOCKERHUB_FRONTEND_NAME }}
+            sudo docker run -it -d -p 3000:3000 --name ${{ secrets.DOCKERHUB_FRONTEND_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_FRONTEND_NAME }}
+
+      - name: Remove IP FROM security group
+        run: |
+          aws ec2 revoke-security-group-ingress \
+          --group-id ${{ secrets.AWS_SG_ID }} \
+          --protocol tcp --port 22 \
+          --cidr ${{ steps.ip.outputs.ipv4 }}/32
