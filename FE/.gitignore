@@ -13,5 +13,3 @@
 
 # local env files
 .env*.local
-
-/out
