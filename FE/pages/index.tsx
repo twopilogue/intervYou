@@ -9,7 +9,7 @@ const HomePage = () => {
   };
   return (
     <div>
-      <div>Welcome to Next.js!</div>
+      <h1 className="text-3xl font-bold underline">Hello world!</h1>
       <div>
         <button onClick={test}>버튼</button>
       </div>
