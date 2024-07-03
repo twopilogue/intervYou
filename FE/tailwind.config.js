@@ -22,6 +22,7 @@ export const theme = {
       70: "#555555",
       90: "#1D1D1D",
     },
+    lightblue: "#EBF6FF",
   },
   extend: {
     fontFamily: {
