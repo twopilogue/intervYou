@@ -6,7 +6,7 @@ interface ButtonProps {
   size?: "small" | "medium" | "large";
   label: string;
   onClick?: () => void;
-  as: ElementType;
+  as?: ElementType;
   href?: string;
 }
 
@@ -15,20 +15,17 @@ const buttonConfig = {
   primary: {
     bgColor: "bg-primary",
     color: "text-white",
-    outline:
-      "border-primary-500 text-primary-500 bg-opacity-0 hover:bg-opacity-10",
+    outline: "border-primary-500 text-primary-500 bg-opacity-0 hover:bg-opacity-10",
   },
   secondary: {
     bgColor: "bg-secondary",
     color: "text-gray-90",
-    outline:
-      "border-secondary-500 text-secondary-500 bg-opacity-0 hover:bg-opacity-10",
+    outline: "border-secondary-500 text-secondary-500 bg-opacity-0 hover:bg-opacity-10",
   },
   gray: {
     bgColor: "bg-gray-30",
     color: "text-gray-60",
-    outline:
-      "border-secondary-500 text-secondary-500 bg-opacity-0 hover:bg-opacity-10",
+    outline: "border-secondary-500 text-secondary-500 bg-opacity-0 hover:bg-opacity-10",
   },
 
   // Sizes
@@ -48,7 +45,7 @@ export const Button = ({
   return (
     <Component
       type="button"
-      className={`rounded-lg  ${buttonConfig[size]} ${buttonConfig[types].bgColor} ${buttonConfig[types].color}`}
+      className={`rounded-lg ${buttonConfig[size]} ${buttonConfig[types].bgColor} ${buttonConfig[types].color}`}
       {...props}
     >
       {label}
