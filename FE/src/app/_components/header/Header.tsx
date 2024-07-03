@@ -9,7 +9,7 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const link = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&state=state`;
 
 export const Header = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const [open, setOpen] = useState(false);
   return (
     <>
@@ -36,7 +36,7 @@ export const Header = () => {
           <div className="flex gap-6 *:cursor-pointer max-sm:hidden">
             {isLogin ? (
               <>
-                <Link href="/interview">면접 시작</Link>
+                <Link href="/create">면접 시작</Link>
                 <Link href="/list">면접 내역</Link>
                 <Link href="/community">커뮤니티</Link>
                 <Link href="/mypage">마이페이지</Link>
@@ -63,7 +63,7 @@ export const Header = () => {
             <div className="flex flex-col gap-4 *:cursor-pointer">
               {isLogin ? (
                 <>
-                  <Link href="/interview">면접 시작</Link>
+                  <Link href="/create">면접 시작</Link>
                   <Link href="/list">면접 내역</Link>
                   <Link href="/community">커뮤니티</Link>
                   <Link href="/mypage">마이페이지</Link>
