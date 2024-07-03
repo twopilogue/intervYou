@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ElementType } from "react";
 
 interface ButtonProps {
   types?: "primary" | "secondary" | "gray";
@@ -6,6 +6,8 @@ interface ButtonProps {
   size?: "small" | "medium" | "large";
   label: string;
   onClick?: () => void;
+  as: ElementType;
+  href?: string;
 }
 
 const buttonConfig = {
@@ -40,15 +42,16 @@ export const Button = ({
   size = "medium",
   backgroundColor,
   label,
+  as: Component = "button",
   ...props
 }: ButtonProps) => {
   return (
-    <button
+    <Component
       type="button"
       className={`rounded-lg  ${buttonConfig[size]} ${buttonConfig[types].bgColor} ${buttonConfig[types].color}`}
       {...props}
     >
       {label}
-    </button>
+    </Component>
   );
 };
