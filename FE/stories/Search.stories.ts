@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from "@storybook/react/*";
-import { SearchField } from "../pages/_components/input/SearchField";
+import { SearchField } from "../src/app/_components/input/SearchField";
 
 const meta: Meta<typeof SearchField> = {
   title: "Example/Search",
