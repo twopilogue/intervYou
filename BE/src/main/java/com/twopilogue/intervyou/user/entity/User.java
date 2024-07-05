@@ -23,4 +23,8 @@ public class User {
 
     @Column(name = "withdrawal_time")
     private LocalDateTime withdrawalTime;
+
+    public void withdrawal() {
+        this.withdrawalTime = LocalDateTime.now();
+    }
 }

@@ -43,6 +43,15 @@ public class UserService {
         return LoginResponse.builder().id(user.getUserId()).token(jwtProvider.createToken(user)).build();
     }
 
+    @Transactional
+    public void withdrawal(final String naverIdToken) {
+        final User user = userRepository.findByNaverIdTokenAndWithdrawalTimeIsNull(naverIdToken);
+        if (user == null) {
+            throw new UserException(UserErrorResult.NOT_FOUND_USER);
+        }
+        user.withdrawal();
+    }
+
     private String getNaverAccessToken(final String code) {
         final NaverTokenResponse naverTokenResponse = WebClient.create("https://nid.naver.com").get()
                 .uri(uriBuilder -> uriBuilder.path("/oauth2.0/token")
