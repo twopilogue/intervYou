@@ -43,7 +43,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
         String naverIdToken = jwtProvider.validateToken(request);
         if (naverIdToken != null) {
-            User userEntity = userRepository.findByNaverIdToken(naverIdToken);
+            User userEntity = userRepository.findByNaverIdTokenAndWithdrawalTimeIsNull(naverIdToken);
             PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
             Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
