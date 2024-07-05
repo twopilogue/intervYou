@@ -1,5 +1,9 @@
 FROM node:latest
 
+RUN mkdir -p /FE
+
 WORKDIR /FE
 
-ENTRYPOINT npm run dev
+ADD . /FE
+
+ENTRYPOINT npm run start
