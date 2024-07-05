@@ -5,11 +5,14 @@ import com.twopilogue.intervyou.user.dto.response.LoginResponse;
 import com.twopilogue.intervyou.user.dto.response.naver.NaverIdTokenResponse;
 import com.twopilogue.intervyou.user.dto.response.naver.NaverTokenResponse;
 import com.twopilogue.intervyou.user.entity.User;
+import com.twopilogue.intervyou.user.exception.UserErrorResult;
+import com.twopilogue.intervyou.user.exception.UserException;
 import com.twopilogue.intervyou.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -25,10 +28,11 @@ public class UserService {
     @Value("${naver.key.cliend-secret}")
     private String naverClientSecret;
 
+    @Transactional
     public LoginResponse login(final String code) {
         final String naverAccessToken = getNaverAccessToken(code);
         final String naverIdToken = getNaverIdToken(naverAccessToken);
-        User user = userRepository.findByNaverIdToken(naverIdToken);
+        User user = userRepository.findByNaverIdTokenAndWithdrawalTimeIsNull(naverIdToken);
 
         if (user == null) {
             user = userRepository.save(User.builder()
