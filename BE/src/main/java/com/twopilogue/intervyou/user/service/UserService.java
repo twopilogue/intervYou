@@ -1,5 +1,6 @@
 package com.twopilogue.intervyou.user.service;
 
+import com.twopilogue.intervyou.config.jwt.JwtProvider;
 import com.twopilogue.intervyou.user.dto.response.LoginResponse;
 import com.twopilogue.intervyou.user.dto.response.naver.NaverIdTokenResponse;
 import com.twopilogue.intervyou.user.dto.response.naver.NaverTokenResponse;
@@ -16,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
     @Value("${naver.key.cliend-id}")
     private String naverClientID;
@@ -34,7 +36,7 @@ public class UserService {
                     .build());
         }
 
-        return LoginResponse.builder().id(user.getUserId()).build();
+        return LoginResponse.builder().id(user.getUserId()).token(jwtProvider.createToken(user)).build();
     }
 
     private String getNaverAccessToken(final String code) {
