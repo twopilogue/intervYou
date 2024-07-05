@@ -15,6 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Random;
+
+import static com.twopilogue.intervyou.user.constant.UserConstant.ANIMALS;
+import static com.twopilogue.intervyou.user.constant.UserConstant.DETERMINERS;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -37,10 +42,11 @@ public class UserService {
         if (user == null) {
             user = userRepository.save(User.builder()
                     .naverIdToken(naverIdToken)
+                    .nickname(makeNickname())
                     .build());
         }
 
-        return LoginResponse.builder().id(user.getUserId()).token(jwtProvider.createToken(user)).build();
+        return LoginResponse.builder().id(user.getId()).nickname(user.getNickname()).token(jwtProvider.createToken(user)).build();
     }
 
     @Transactional
@@ -50,6 +56,16 @@ public class UserService {
             throw new UserException(UserErrorResult.NOT_FOUND_USER);
         }
         user.withdrawal();
+    }
+
+    private String makeNickname() {
+        Random random = new Random();
+        String nickname = null;
+
+        while (nickname == null || userRepository.existsByNickname(nickname)) {
+            nickname = DETERMINERS[random.nextInt(DETERMINERS.length)] + ANIMALS[random.nextInt(ANIMALS.length)] + random.nextInt(10000);
+        }
+        return nickname;
     }
 
     private String getNaverAccessToken(final String code) {

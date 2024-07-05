@@ -20,6 +20,9 @@ public class User {
     @Column(name = "naver_id_token", nullable = false, length = 65)
     private String naverIdToken;
 
+    @Column(nullable = false, length = 15)
+    private String nickname;
+
     @Column(name = "withdrawal_time")
     private LocalDateTime withdrawalTime;
 
