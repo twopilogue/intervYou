@@ -69,6 +69,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           timeout: 60s
           script: |
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_BACKEND_NAME }}
             sudo docker stop ${{ secrets.DOCKERHUB_BACKEND_NAME }}
             sudo docker rm ${{ secrets.DOCKERHUB_BACKEND_NAME }}
             sudo docker run -it -d -p 8080:8080 --name ${{ secrets.DOCKERHUB_BACKEND_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_BACKEND_NAME }}
