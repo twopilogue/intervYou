@@ -5,8 +5,10 @@ import { InputField } from "../_components/input/InputField";
 import { Button } from "../_components/button/Button";
 import Radio from "./_components/Radio";
 import CheckBox from "./_components/CheckBox";
+import { useRouter } from "next/navigation";
 
 export default function Create({}) {
+  const router = useRouter();
   const [selected, setSelected] = useState(1);
 
   const handleRadio = (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +48,7 @@ export default function Create({}) {
                 </span>
               </div>
               <div className="w-18 flex-shrink-0">
-                <Button size="small" label="추가" />
+                <Button size="small">추가</Button>
               </div>
             </div>
           ) : (
@@ -76,8 +78,8 @@ export default function Create({}) {
         </div>
       </div>
       <div className="absolute flex w-full justify-center gap-4 px-4 *:min-w-32 max-sm:bottom-4 sm:bottom-8">
-        <Button types="gray" label="취소" />
-        <Button types="primary" label="시작하기" />
+        <Button types="gray">취소</Button>
+        <Button onClick={() => router.push("/content")}>시작하기</Button>
       </div>
     </>
   );
