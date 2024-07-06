@@ -1,6 +1,6 @@
 package com.twopilogue.intervyou.user.controller;
 
-import com.twopilogue.intervyou.common.dto.BaseResponse;
+import com.twopilogue.intervyou.common.BaseResponse;
 import com.twopilogue.intervyou.config.auth.PrincipalDetails;
 import com.twopilogue.intervyou.user.service.UserService;
 import lombok.RequiredArgsConstructor;
