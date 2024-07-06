@@ -13,5 +13,5 @@ public class WriteCommentResponse {
     private String nickname;
     private String createTime;
     private int depth;
-    private int group;
+    private int commentGroup;
 }

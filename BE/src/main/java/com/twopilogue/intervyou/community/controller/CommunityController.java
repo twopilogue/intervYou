@@ -1,6 +1,7 @@
 package com.twopilogue.intervyou.community.controller;
 
 import com.twopilogue.intervyou.common.BaseResponse;
+import com.twopilogue.intervyou.community.dto.request.ModifyCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.ModifyPostRequest;
 import com.twopilogue.intervyou.community.dto.request.WriteCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.WritePostRequest;
@@ -43,5 +44,14 @@ public class CommunityController {
                                                      @PathVariable final long communityId,
                                                      @RequestBody @Valid final WriteCommentRequest writeCommentRequest) {
         return new ResponseEntity<>(BaseResponse.from(WRITE_COMMENT_SUCCESS_MESSAGE, communityService.writeComment(principalDetails.getUser(), communityId, writeCommentRequest)), HttpStatus.OK);
+    }
+
+    @PutMapping("/{communityId}/comments/{commentId}")
+    public ResponseEntity<BaseResponse> modifyComment(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                      @PathVariable final long communityId,
+                                                      @PathVariable final long commentId,
+                                                      @RequestBody @Valid final ModifyCommentRequest modifyCommentRequest) {
+        communityService.modifyComment(principalDetails.getUser(), communityId, commentId, modifyCommentRequest);
+        return new ResponseEntity<>(BaseResponse.from(MODIFY_COMMENT_SUCCESS_MESSAGE), HttpStatus.OK);
     }
 }

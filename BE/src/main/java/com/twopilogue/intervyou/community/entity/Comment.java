@@ -45,4 +45,8 @@ public class Comment {
 
     @Column(name = "delete_time")
     private LocalDateTime deleteTime;
+
+    public void modifyComment(final String commentContent) {
+        this.commentContent = commentContent;
+    }
 }
