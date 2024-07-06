@@ -1,7 +1,8 @@
-interface InputFieldProps {
+import { InputHTMLAttributes } from "react";
+
+interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
   label?: string;
-  placeholder?: string;
 }
 
 export const InputField = ({ name, label, ...props }: InputFieldProps) => {
@@ -13,7 +14,6 @@ export const InputField = ({ name, label, ...props }: InputFieldProps) => {
         </label>
       )}
       <input
-        name={name}
         type="text"
         className="w-full rounded-lg border border-gray-30 px-2.5 py-1.5 text-sm text-gray-90 outline-none focus:border-primary"
         {...props}
