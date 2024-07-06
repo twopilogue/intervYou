@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommunityRepository extends JpaRepository<Community, Long> {
     Community findByIdAndNicknameAndDeleteTimeIsNull(final long id, final String nickname);
+    Community findByIdAndDeleteTimeIsNull(final long id);
 }
