@@ -40,6 +40,14 @@ public class CommunityService {
         }
     }
 
+    private Comment findComment(final String nickname, final long commentId, final long communityId) {
+        final Comment comment = commentRepository.findByIdAndNicknameAndCommunityIdAndDeleteTimeIsNull(commentId, nickname, communityId);
+        if (comment == null) {
+            throw new CommunityException(CommunityErrorResult.INVALID_COMMENT);
+        }
+        return comment;
+    }
+
     public WritePostResponse writePost(final User user, final WritePostRequest writePostRequest) {
         final Community community = communityRepository.save(Community.builder()
                 .title(writePostRequest.getTitle())
@@ -99,11 +107,14 @@ public class CommunityService {
 
     public void modifyComment(final User user, final long communityId, final long commentId, final ModifyCommentRequest modifyCommentRequest) {
         existValidCommunity(communityId);
-        final Comment comment = commentRepository.findByIdAndNicknameAndCommunityIdAndDeleteTimeIsNull(commentId, user.getNickname(), communityId);
-        if (comment == null) {
-            throw new CommunityException(CommunityErrorResult.INVALID_COMMENT);
-        }
+        final Comment comment = findComment(user.getNickname(), commentId, communityId);
         comment.modifyComment(modifyCommentRequest.getCommentContent());
+    }
+
+    public void removeComment(final User user, final long communityId, final long commentId) {
+        existValidCommunity(communityId);
+        final Comment comment = findComment(user.getNickname(), commentId, communityId);
+        comment.removeComment();
     }
 
 }

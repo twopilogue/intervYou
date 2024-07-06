@@ -49,4 +49,8 @@ public class Comment {
     public void modifyComment(final String commentContent) {
         this.commentContent = commentContent;
     }
+
+    public void removeComment() {
+        this.deleteTime = LocalDateTime.now();
+    }
 }
