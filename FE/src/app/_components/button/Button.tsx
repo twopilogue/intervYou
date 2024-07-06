@@ -1,13 +1,11 @@
-import React, { ElementType } from "react";
+import React, { ButtonHTMLAttributes, ElementType, ReactNode } from "react";
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  children: string | ReactNode;
   types?: "primary" | "secondary" | "gray";
   backgroundColor?: string;
   size?: "small" | "medium" | "large";
-  label: string;
-  onClick?: () => void;
   as?: ElementType;
-  href?: string;
 }
 
 const buttonConfig = {
@@ -35,20 +33,21 @@ const buttonConfig = {
 };
 
 export const Button = ({
+  children,
   types = "primary",
   size = "medium",
   backgroundColor,
-  label,
+
   as: Component = "button",
   ...props
 }: ButtonProps) => {
   return (
     <Component
       type="button"
-      className={`rounded-lg ${buttonConfig[size]} ${buttonConfig[types].bgColor} ${buttonConfig[types].color}`}
+      className={`min-h-10 rounded-lg ${buttonConfig[size]} ${buttonConfig[types].bgColor} ${buttonConfig[types].color}`}
       {...props}
     >
-      {label}
+      {children}
     </Component>
   );
 };
