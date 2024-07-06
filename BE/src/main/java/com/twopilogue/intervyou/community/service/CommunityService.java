@@ -1,5 +1,6 @@
 package com.twopilogue.intervyou.community.service;
 
+import com.twopilogue.intervyou.community.dto.request.ModifyCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.ModifyPostRequest;
 import com.twopilogue.intervyou.community.dto.request.WriteCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.WritePostRequest;
@@ -27,8 +28,19 @@ public class CommunityService {
     private final CommunityRepository communityRepository;
     private final CommentRepository commentRepository;
 
-    public WritePostResponse writePost(final User user, final WritePostRequest writePostRequest) {
+    private String localDateTimeToString(final LocalDateTime time) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return time.format(formatter);
+    }
 
+    private void existValidCommunity(final long communityId) {
+        final Community community = communityRepository.findByIdAndDeleteTimeIsNull(communityId);
+        if (community == null) {
+            throw new CommunityException(CommunityErrorResult.INVALID_POST);
+        }
+    }
+
+    public WritePostResponse writePost(final User user, final WritePostRequest writePostRequest) {
         final Community community = communityRepository.save(Community.builder()
                 .title(writePostRequest.getTitle())
                 .content(writePostRequest.getContent())
@@ -50,11 +62,7 @@ public class CommunityService {
     }
 
     public WriteCommentResponse writeComment(final User user, final long communityId, final WriteCommentRequest writeCommentRequest) {
-        final Community community = communityRepository.findByIdAndDeleteTimeIsNull(communityId);
-        if (community == null) {
-            throw new CommunityException(CommunityErrorResult.INVALID_POST);
-        }
-
+        existValidCommunity(communityId);
         int depth, commentGroup;
         if (writeCommentRequest.getParentCommentId() != null) {
             final Comment parentComment = commentRepository.findByIdAndCommunityIdAndDeleteTimeIsNull(writeCommentRequest.getParentCommentId(), communityId);
@@ -84,14 +92,18 @@ public class CommunityService {
                 .commentContent(comment.getCommentContent())
                 .nickname(comment.getNickname())
                 .depth(comment.getDepth())
-                .group(comment.getCommentGroup())
+                .commentGroup(comment.getCommentGroup())
                 .createTime(localDateTimeToString(comment.getCreateTime()))
                 .build();
     }
 
-    private String localDateTimeToString(final LocalDateTime time) {
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return time.format(formatter);
+    public void modifyComment(final User user, final long communityId, final long commentId, final ModifyCommentRequest modifyCommentRequest) {
+        existValidCommunity(communityId);
+        final Comment comment = commentRepository.findByIdAndNicknameAndCommunityIdAndDeleteTimeIsNull(commentId, user.getNickname(), communityId);
+        if (comment == null) {
+            throw new CommunityException(CommunityErrorResult.INVALID_COMMENT);
+        }
+        comment.modifyComment(modifyCommentRequest.getCommentContent());
     }
 
 }
