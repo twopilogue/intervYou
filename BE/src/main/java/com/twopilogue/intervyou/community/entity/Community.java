@@ -38,4 +38,9 @@ public class Community {
 
     @Column(name = "delete_time")
     private LocalDateTime deleteTime;
+
+    public void modifyPost(final String title, final String content){
+        this.title = title;
+        this.content = content;
+    }
 }
