@@ -35,7 +35,7 @@ public class CommunityService {
 
     @Transactional
     public void modifyPost(final User user, final long communityId, final ModifyPostRequest modifyPostRequest) {
-        final Community community = communityRepository.findByIdAndNickname(communityId, user.getNickname());
+        final Community community = communityRepository.findByIdAndNicknameAndDeleteTimeIsNull(communityId, user.getNickname());
         if (community == null) {
             throw new CommunityException(CommunityErrorResult.INVALID_POST);
         }
