@@ -1,25 +1,28 @@
-interface TextAreaProps {
+import { InputHTMLAttributes } from "react";
+
+interface TextAreaProps extends InputHTMLAttributes<HTMLTextAreaElement> {
   name: string;
   label?: string;
   placeholder: string;
+  onChange?: any;
 }
 
 export const TextArea = ({ name, label, ...props }: TextAreaProps) => {
   return (
-    <div>
+    <>
       {label && (
-        <label
-          className="block mb-2 text-gray-90 text-sm font-bold"
-          htmlFor={name}
-        >
+        <label className="mb-2 block text-sm font-bold text-gray-90" htmlFor={name}>
           {label}
         </label>
       )}
       <textarea
         id={name}
-        className="px-2.5 py-3 rounded-lg border border-gray-30 outline-none text-sm text-gray-90 focus:border-primary"
+        className="h-min w-full resize-none overflow-hidden rounded-lg border border-gray-30 px-2.5 py-2.5 text-sm text-gray-90 outline-none focus:border-primary"
+        rows={1}
         {...props}
       />
-    </div>
+    </>
   );
 };
+
+TextArea.displayName = "TextArea";
