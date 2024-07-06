@@ -54,4 +54,12 @@ public class CommunityController {
         communityService.modifyComment(principalDetails.getUser(), communityId, commentId, modifyCommentRequest);
         return new ResponseEntity<>(BaseResponse.from(MODIFY_COMMENT_SUCCESS_MESSAGE), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{communityId}/comments/{commentId}")
+    public ResponseEntity<BaseResponse> removeComment(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                      @PathVariable final long communityId,
+                                                      @PathVariable final long commentId) {
+        communityService.removeComment(principalDetails.getUser(), communityId, commentId);
+        return new ResponseEntity<>(BaseResponse.from(REMOVE_COMMENT_SUCCESS_MESSAGE), HttpStatus.OK);
+    }
 }
