@@ -1,6 +1,6 @@
 package com.twopilogue.intervyou.user.exception;
 
-import com.twopilogue.intervyou.common.dto.BaseErrorResult;
+import com.twopilogue.intervyou.common.BaseErrorResult;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

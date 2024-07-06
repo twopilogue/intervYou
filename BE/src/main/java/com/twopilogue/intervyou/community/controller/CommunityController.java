@@ -1,6 +1,7 @@
 package com.twopilogue.intervyou.community.controller;
 
-import com.twopilogue.intervyou.common.dto.BaseResponse;
+import com.twopilogue.intervyou.common.BaseResponse;
+import com.twopilogue.intervyou.community.dto.request.ModifyPostRequest;
 import com.twopilogue.intervyou.community.dto.request.WritePostRequest;
 import com.twopilogue.intervyou.community.service.CommunityService;
 import com.twopilogue.intervyou.config.auth.PrincipalDetails;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.twopilogue.intervyou.community.constant.CommunityConstant.MODIFY_POST_SUCCESS_MESSAGE;
 import static com.twopilogue.intervyou.community.constant.CommunityConstant.WRITE_POST_SUCCESS_MESSAGE;
 
 @CrossOrigin("*")
@@ -26,5 +28,13 @@ public class CommunityController {
     public ResponseEntity<BaseResponse> writePost(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                                   @RequestBody @Valid final WritePostRequest writePostRequest) {
         return new ResponseEntity<>(BaseResponse.from(WRITE_POST_SUCCESS_MESSAGE, communityService.writePost(principalDetails.getUser(), writePostRequest)), HttpStatus.OK);
+    }
+
+    @PutMapping("/{communityId}")
+    public ResponseEntity<BaseResponse> modifyPost(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                   @PathVariable final long communityId,
+                                                   @RequestBody @Valid final ModifyPostRequest modifyPostRequest) {
+        communityService.modifyPost(principalDetails.getUser(), communityId, modifyPostRequest);
+        return new ResponseEntity<>(BaseResponse.from(MODIFY_POST_SUCCESS_MESSAGE), HttpStatus.OK);
     }
 }
