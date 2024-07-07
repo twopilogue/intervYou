@@ -1,6 +1,7 @@
 import { Button } from "../_components/button/Button";
 import { SearchField } from "../_components/input/SearchField";
 import BoardFrame from "./BoardFrame";
+import Pagination from "./Pagination";
 
 export default function Board({}) {
   return (
@@ -16,8 +17,9 @@ export default function Board({}) {
         </div>
         <Button>새 글 작성</Button>
       </div>
-      <div className="mb-8 h-full overflow-y-auto px-4">
+      <div className="h-full overflow-y-auto px-4">
         <BoardFrame />
+        <Pagination />
       </div>
     </div>
   );
