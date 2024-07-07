@@ -5,7 +5,7 @@ import { Button } from "../_components/button/Button";
 import { TextArea } from "../_components/input/TextArea";
 import { useState } from "react";
 
-export default function Content({}) {
+export default function ChatDetails({}) {
   const [input, setInput] = useState("");
 
   return (
