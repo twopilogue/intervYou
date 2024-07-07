@@ -43,7 +43,7 @@ export default function ChatHeader({}) {
               면접 삭제
             </Link>
             <Link href="/list">면접 내역</Link>
-            <Link href="/community">커뮤니티</Link>
+            <Link href="/board">커뮤니티</Link>
             <Link href="/mypage">마이페이지</Link>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default function ChatHeader({}) {
             </div>
             <div className="flex flex-col gap-4 *:cursor-pointer">
               <Link href="/list">면접 내역</Link>
-              <Link href="/community">커뮤니티</Link>
+              <Link href="/board">커뮤니티</Link>
               <Link href="/mypage">마이페이지</Link>
             </div>
           </div>
