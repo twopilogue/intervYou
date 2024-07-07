@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { MouseEvent, useState } from "react";
 import { Modal } from "@mui/base";
 import Link from "next/link";
 
@@ -11,11 +11,19 @@ const link = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client
 export const Header = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [open, setOpen] = useState(false);
+
+  const handleLinks = (event: MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest("a") && open) setOpen(false);
+  };
+
   return (
     <>
       <div className="flex h-16 items-center border-b border-gray-40">
         <div className="mx-4 flex w-full items-center justify-between">
-          <span className="text-xl font-bold">intervYou</span>
+          <Link className="text-xl font-bold" href="/">
+            intervYou
+          </Link>
           <div className="flex gap-4 sm:hidden">
             <span className="cursor-pointer">
               <svg className="h-6 w-6 text-gray-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,7 +44,6 @@ export const Header = () => {
           <div className="flex gap-6 *:cursor-pointer max-sm:hidden">
             {isLogin ? (
               <>
-                <Link href="/create">면접 시작</Link>
                 <Link href="/list">면접 내역</Link>
                 <Link href="/community">커뮤니티</Link>
                 <Link href="/mypage">마이페이지</Link>
@@ -60,7 +67,7 @@ export const Header = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <div className="flex flex-col gap-4 *:cursor-pointer">
+            <div className="flex flex-col gap-4 *:cursor-pointer" onClick={handleLinks}>
               {isLogin ? (
                 <>
                   <Link href="/create">면접 시작</Link>

@@ -2,7 +2,7 @@ import { Modal } from "@mui/base";
 import Link from "next/link";
 import { useState } from "react";
 
-export default function ContentHeader({}) {
+export default function ChatHeader({}) {
   const [open, setOpen] = useState(false);
   return (
     <>
