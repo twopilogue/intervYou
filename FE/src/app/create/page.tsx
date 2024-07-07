@@ -79,7 +79,7 @@ export default function Create({}) {
       </div>
       <div className="absolute flex w-full justify-center gap-4 px-4 *:min-w-32 max-sm:bottom-4 sm:bottom-8">
         <Button types="gray">취소</Button>
-        <Button onClick={() => router.push("/chat")}>시작하기</Button>
+        <Button onClick={() => router.push("/list/chat")}>시작하기</Button>
       </div>
     </>
   );
