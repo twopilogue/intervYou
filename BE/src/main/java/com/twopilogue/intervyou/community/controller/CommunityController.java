@@ -87,4 +87,10 @@ public class CommunityController {
         return new ResponseEntity<>(BaseResponse.from(READ_POST_LIST_SUCCESS_MESSAGE, communityService.readMyPostList(principalDetails.getUser(), page)), HttpStatus.OK);
     }
 
+    @GetMapping("/my-comments")
+    public ResponseEntity<BaseResponse> readMyCommentList(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                          @RequestParam int page) {
+        return new ResponseEntity<>(BaseResponse.from(READ_COMMENT_LIST_SUCCESS_MESSAGE, communityService.readMyCommentList(principalDetails.getUser(), page)), HttpStatus.OK);
+    }
+
 }

@@ -4,10 +4,7 @@ import com.twopilogue.intervyou.community.dto.request.ModifyCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.ModifyPostRequest;
 import com.twopilogue.intervyou.community.dto.request.WriteCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.WritePostRequest;
-import com.twopilogue.intervyou.community.dto.response.CommentResponse;
-import com.twopilogue.intervyou.community.dto.response.PostListDtoResponse;
-import com.twopilogue.intervyou.community.dto.response.PostListResponse;
-import com.twopilogue.intervyou.community.dto.response.PostResponse;
+import com.twopilogue.intervyou.community.dto.response.*;
 import com.twopilogue.intervyou.community.entity.Comment;
 import com.twopilogue.intervyou.community.entity.Community;
 import com.twopilogue.intervyou.community.exception.CommunityErrorResult;
@@ -222,6 +219,23 @@ public class CommunityService {
                                 .nickname(post.getNickname())
                                 .createTime(localDateTimeToString(post.getCreateTime()))
                                 .commentCount(commentRepository.countByCommunityId(post.getId()))
+                                .build())
+                        .toList())
+                .build();
+    }
+
+    public CommentListResponse readMyCommentList(final User user, int page) {
+        final PageRequest pageRequest = PageRequest.of(page <= 0 ? 0 : page - 1, 10, Sort.by(Sort.Direction.DESC, "id"));
+        final Page<Comment> commentList = commentRepository.findAllByNicknameAndDeleteTimeIsNull(pageRequest, user.getNickname());
+
+        return CommentListResponse.builder()
+                .totalPages(commentList.getTotalPages())
+                .comments(commentList.map(comment -> CommentListDtoResponse.builder()
+                                .commentId(comment.getId())
+                                .communityId(comment.getCommunityId())
+                                .title(communityRepository.findById(comment.getCommunityId()).get().getTitle())
+                                .commentContent(comment.getCommentContent())
+                                .createTime(localDateTimeToString(comment.getCreateTime()))
                                 .build())
                         .toList())
                 .build();
