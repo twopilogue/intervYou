@@ -15,12 +15,18 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long userId;
+    private Long id;
 
     @Column(name = "naver_id_token", nullable = false, length = 65)
     private String naverIdToken;
 
+    @Column(nullable = false, length = 15)
+    private String nickname;
+
     @Column(name = "withdrawal_time")
     private LocalDateTime withdrawalTime;
+
+    public void withdrawal() {
+        this.withdrawalTime = LocalDateTime.now();
+    }
 }

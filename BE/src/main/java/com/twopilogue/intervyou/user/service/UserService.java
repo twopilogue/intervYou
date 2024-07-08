@@ -5,12 +5,20 @@ import com.twopilogue.intervyou.user.dto.response.LoginResponse;
 import com.twopilogue.intervyou.user.dto.response.naver.NaverIdTokenResponse;
 import com.twopilogue.intervyou.user.dto.response.naver.NaverTokenResponse;
 import com.twopilogue.intervyou.user.entity.User;
+import com.twopilogue.intervyou.user.exception.UserErrorResult;
+import com.twopilogue.intervyou.user.exception.UserException;
 import com.twopilogue.intervyou.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Random;
+
+import static com.twopilogue.intervyou.user.constant.UserConstant.ANIMALS;
+import static com.twopilogue.intervyou.user.constant.UserConstant.DETERMINERS;
 
 @Service
 @RequiredArgsConstructor
@@ -25,18 +33,39 @@ public class UserService {
     @Value("${naver.key.cliend-secret}")
     private String naverClientSecret;
 
+    @Transactional
     public LoginResponse login(final String code) {
         final String naverAccessToken = getNaverAccessToken(code);
         final String naverIdToken = getNaverIdToken(naverAccessToken);
-        User user = userRepository.findByNaverIdToken(naverIdToken);
+        User user = userRepository.findByNaverIdTokenAndWithdrawalTimeIsNull(naverIdToken);
 
         if (user == null) {
             user = userRepository.save(User.builder()
                     .naverIdToken(naverIdToken)
+                    .nickname(makeNickname())
                     .build());
         }
 
-        return LoginResponse.builder().id(user.getUserId()).token(jwtProvider.createToken(user)).build();
+        return LoginResponse.builder().id(user.getId()).nickname(user.getNickname()).token(jwtProvider.createToken(user)).build();
+    }
+
+    @Transactional
+    public void withdrawal(final String naverIdToken) {
+        final User user = userRepository.findByNaverIdTokenAndWithdrawalTimeIsNull(naverIdToken);
+        if (user == null) {
+            throw new UserException(UserErrorResult.NOT_FOUND_USER);
+        }
+        user.withdrawal();
+    }
+
+    private String makeNickname() {
+        Random random = new Random();
+        String nickname = null;
+
+        while (nickname == null || userRepository.existsByNickname(nickname)) {
+            nickname = DETERMINERS[random.nextInt(DETERMINERS.length)] + ANIMALS[random.nextInt(ANIMALS.length)] + random.nextInt(10000);
+        }
+        return nickname;
     }
 
     private String getNaverAccessToken(final String code) {

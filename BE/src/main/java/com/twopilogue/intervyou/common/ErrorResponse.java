@@ -1,4 +1,4 @@
-package com.twopilogue.intervyou.common.dto;
+package com.twopilogue.intervyou.common;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

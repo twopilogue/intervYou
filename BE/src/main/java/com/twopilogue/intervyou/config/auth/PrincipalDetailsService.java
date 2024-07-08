@@ -16,7 +16,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String naverIdToken) throws UsernameNotFoundException {
-        User userEntity = userRepository.findByNaverIdToken(naverIdToken);
+        User userEntity = userRepository.findByNaverIdTokenAndWithdrawalTimeIsNull(naverIdToken);
         return new PrincipalDetails(userEntity);
     }
 }

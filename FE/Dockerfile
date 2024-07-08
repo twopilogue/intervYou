@@ -1,15 +1,9 @@
 FROM node:latest
 
+RUN mkdir -p /FE
+
 WORKDIR /FE
 
-COPY ./package*.json /FE/
-
-RUN npm install
-
-COPY / /FE/
-
-RUN npm run build
+ADD . /FE
 
 ENTRYPOINT npm run start
-
-EXPOSE 8080

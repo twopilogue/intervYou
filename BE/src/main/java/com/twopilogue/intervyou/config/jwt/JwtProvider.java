@@ -38,7 +38,7 @@ public class JwtProvider {
         return JWT.create()
                 .withSubject(SUBJECT)
                 .withExpiresAt(new Date(System.currentTimeMillis() + accessExpires))
-                .withClaim(KEY_ID, user.getUserId())
+                .withClaim(KEY_ID, user.getId())
                 .withClaim(KEY_NAVER_ID_TOKEN, user.getNaverIdToken())
                 .sign(Algorithm.HMAC512(secretKey));
     }

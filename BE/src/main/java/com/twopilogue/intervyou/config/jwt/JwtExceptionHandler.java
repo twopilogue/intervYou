@@ -1,7 +1,7 @@
 package com.twopilogue.intervyou.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.twopilogue.intervyou.common.dto.ErrorResponse;
+import com.twopilogue.intervyou.common.ErrorResponse;
 import com.twopilogue.intervyou.user.exception.UserErrorResult;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
