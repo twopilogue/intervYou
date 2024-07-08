@@ -5,6 +5,8 @@ import com.twopilogue.intervyou.community.dto.request.ModifyPostRequest;
 import com.twopilogue.intervyou.community.dto.request.WriteCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.WritePostRequest;
 import com.twopilogue.intervyou.community.dto.response.CommentResponse;
+import com.twopilogue.intervyou.community.dto.response.PostListDtoResponse;
+import com.twopilogue.intervyou.community.dto.response.PostListResponse;
 import com.twopilogue.intervyou.community.dto.response.PostResponse;
 import com.twopilogue.intervyou.community.entity.Comment;
 import com.twopilogue.intervyou.community.entity.Community;
@@ -14,6 +16,9 @@ import com.twopilogue.intervyou.community.repositiry.CommentRepository;
 import com.twopilogue.intervyou.community.repositiry.CommunityRepository;
 import com.twopilogue.intervyou.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +72,31 @@ public class CommunityService {
             comments.addAll(findComments(communityId, comment.getId()));
         }
         return comments;
+    }
+
+    public PostListResponse readPostList(int page, String keyword) {
+        final PageRequest pageRequest = PageRequest.of(page <= 0 ? 0 : page - 1, 10, Sort.by(Sort.Direction.DESC, "id"));
+        keyword = keyword.replaceAll(" ", "");
+
+        Page<Community> postList;
+        if (keyword.equals("")) {
+            postList = communityRepository.findAll(pageRequest);
+        } else {
+            postList = communityRepository.findAllByTitle(pageRequest, keyword);
+        }
+
+        return PostListResponse.builder()
+                .totalPages(postList.getTotalPages())
+                .communities(postList.map(post -> PostListDtoResponse.builder()
+                                .communityId(post.getId())
+                                .title(post.getTitle())
+                                .content(post.getContent())
+                                .nickname(post.getNickname())
+                                .createTime(localDateTimeToString(post.getCreateTime()))
+                                .commentCount(commentRepository.countByCommunityId(post.getId()))
+                                .build())
+                        .toList())
+                .build();
     }
 
     public PostResponse writePost(final User user, final WritePostRequest writePostRequest) {
