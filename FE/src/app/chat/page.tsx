@@ -9,7 +9,7 @@ export default function ChatDetails({}) {
   const [input, setInput] = useState("");
 
   return (
-    <>
+    <div className="mx-auto max-w-[1024px]">
       <div className="flex h-[calc(100%-4rem-4rem)] flex-col overflow-y-auto p-4">
         <Bubble isMine={false} isFinished={false} content="채팅 내용입니다." />
         <Bubble isMine={true} isFinished={false} content="채팅 내용입니다." />
@@ -48,6 +48,6 @@ export default function ChatDetails({}) {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

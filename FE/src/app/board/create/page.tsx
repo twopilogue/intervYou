@@ -29,7 +29,7 @@ export default function BoardCreate({}) {
         <div className="mb-8">
           <span className="mb-2 block text-sm font-bold text-gray-90">첨부된 질문</span>
           <div className="rounded-2xl bg-gray-10 p-8">
-            <span className="text-gray-60">왜 저희 회사에 입사하고 싶나요?</span>
+            <span className="text-sm text-gray-60">왜 저희 회사에 입사하고 싶나요?</span>
           </div>
         </div>
         <div className="mb-8 flex w-full justify-center gap-4 px-4 *:min-w-32 max-sm:bottom-4 sm:bottom-8">

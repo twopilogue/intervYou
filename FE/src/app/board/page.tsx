@@ -9,9 +9,9 @@ import Pagination from "./Pagination";
 export default function Board({}) {
   const router = useRouter();
   return (
-    <div className="flex h-full flex-col *:mx-auto *:w-full [&>*:not(:nth-child(1))]:max-w-[1440px]">
+    <div className="flex h-full flex-col *:mx-auto *:w-full [&>*:not(:nth-child(1))]:max-w-[1280px]">
       <div className="mx-auto mb-4 flex w-full items-center bg-lightblue px-4 py-8">
-        <div className="mx-auto w-full max-w-[1440px] px-4">
+        <div className="mx-auto w-full max-w-[1280px] px-4">
           <span className="font-bold">커뮤니티</span>
         </div>
       </div>
