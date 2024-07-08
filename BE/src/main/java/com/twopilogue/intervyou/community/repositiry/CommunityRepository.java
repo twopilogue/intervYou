@@ -15,9 +15,10 @@ import java.time.LocalDateTime;
 public interface CommunityRepository extends JpaRepository<Community, Long> {
     Community findByIdAndNicknameAndDeleteTimeIsNull(final long id, final String nickname);
     boolean existsByIdAndDeleteTimeIsNull(final long id);
+    Page<Community> findAll(final Pageable pageable);
 
     @Query("select c from Community c where Function('replace', c.title, ' ', '') like %:title%")
-    Page<Community> findAllByTitle(Pageable pageable, @Param("title") final String title);
+    Page<Community> findAllByTitle(final Pageable pageable, @Param("title") final String title);
 
     @Modifying(clearAutomatically = true)
     @Query("update Community c set c.deleteTime = :deleteTime where c.id = :communityId")

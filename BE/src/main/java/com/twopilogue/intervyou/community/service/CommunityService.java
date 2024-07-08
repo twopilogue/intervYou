@@ -75,9 +75,15 @@ public class CommunityService {
     }
 
     public PostListResponse readPostList(int page, String keyword) {
-        PageRequest pageRequest = PageRequest.of(page <= 0 ? 0 : page - 1, 10, Sort.by(Sort.Direction.DESC, "id"));
+        final PageRequest pageRequest = PageRequest.of(page <= 0 ? 0 : page - 1, 10, Sort.by(Sort.Direction.DESC, "id"));
         keyword = keyword.replaceAll(" ", "");
-        final Page<Community> postList = communityRepository.findAllByTitle(pageRequest, keyword);
+
+        Page<Community> postList;
+        if (keyword.equals("")) {
+            postList = communityRepository.findAll(pageRequest);
+        } else {
+            postList = communityRepository.findAllByTitle(pageRequest, keyword);
+        }
 
         return PostListResponse.builder()
                 .totalPages(postList.getTotalPages())
