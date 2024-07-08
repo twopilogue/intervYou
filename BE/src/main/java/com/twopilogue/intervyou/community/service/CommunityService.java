@@ -208,4 +208,22 @@ public class CommunityService {
         final Comment comment = findComment(user.getNickname(), commentId, communityId);
         comment.removeComment();
     }
+
+    public PostListResponse readMyPostList(final User user, int page) {
+        final PageRequest pageRequest = PageRequest.of(page <= 0 ? 0 : page - 1, 10, Sort.by(Sort.Direction.DESC, "id"));
+        final Page<Community> postList = communityRepository.findAllByNicknameAndDeleteTimeIsNull(pageRequest, user.getNickname());
+
+        return PostListResponse.builder()
+                .totalPages(postList.getTotalPages())
+                .communities(postList.map(post -> PostListDtoResponse.builder()
+                                .communityId(post.getId())
+                                .title(post.getTitle())
+                                .content(post.getContent())
+                                .nickname(post.getNickname())
+                                .createTime(localDateTimeToString(post.getCreateTime()))
+                                .commentCount(commentRepository.countByCommunityId(post.getId()))
+                                .build())
+                        .toList())
+                .build();
+    }
 }

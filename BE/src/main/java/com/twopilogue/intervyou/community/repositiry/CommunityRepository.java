@@ -16,6 +16,7 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
     Community findByIdAndNicknameAndDeleteTimeIsNull(final long id, final String nickname);
     boolean existsByIdAndDeleteTimeIsNull(final long id);
     Page<Community> findAllByDeleteTimeIsNull(final Pageable pageable);
+    Page<Community> findAllByNicknameAndDeleteTimeIsNull(final Pageable pageable, final String nickname);
 
     @Query("select c from Community c where Function('replace', c.title, ' ', '') like %:title% and c.deleteTime is null ")
     Page<Community> findAllByTitle(final Pageable pageable, @Param("title") final String title);
