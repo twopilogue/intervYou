@@ -80,7 +80,7 @@ public class CommunityService {
 
         Page<Community> postList;
         if (keyword.equals("")) {
-            postList = communityRepository.findAll(pageRequest);
+            postList = communityRepository.findAllByDeleteTimeIsNull(pageRequest);
         } else {
             postList = communityRepository.findAllByTitle(pageRequest, keyword);
         }
@@ -208,5 +208,4 @@ public class CommunityService {
         final Comment comment = findComment(user.getNickname(), commentId, communityId);
         comment.removeComment();
     }
-
 }
