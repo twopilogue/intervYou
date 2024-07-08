@@ -1,9 +1,13 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Button } from "../_components/button/Button";
 import { SearchField } from "../_components/input/SearchField";
 import BoardFrame from "./BoardFrame";
 import Pagination from "./Pagination";
 
 export default function Board({}) {
+  const router = useRouter();
   return (
     <div className="flex h-full flex-col *:mx-auto *:w-full [&>*:not(:nth-child(1))]:max-w-[1440px]">
       <div className="mx-auto mb-4 flex w-full items-center bg-lightblue px-4 py-8">
@@ -15,7 +19,7 @@ export default function Board({}) {
         <div className="w-full flex-1">
           <SearchField name="search" placeholder="검색어를 입력하세요." />
         </div>
-        <Button>새 글 작성</Button>
+        <Button onClick={() => router.push("/board/create")}>새 글 작성</Button>
       </div>
       <div className="h-full overflow-y-auto px-4">
         <BoardFrame />
