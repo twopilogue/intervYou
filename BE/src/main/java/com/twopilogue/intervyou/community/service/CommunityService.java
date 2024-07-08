@@ -6,8 +6,6 @@ import com.twopilogue.intervyou.community.dto.request.WriteCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.WritePostRequest;
 import com.twopilogue.intervyou.community.dto.response.CommentResponse;
 import com.twopilogue.intervyou.community.dto.response.PostResponse;
-import com.twopilogue.intervyou.community.dto.response.WriteCommentResponse;
-import com.twopilogue.intervyou.community.dto.response.WritePostResponse;
 import com.twopilogue.intervyou.community.entity.Comment;
 import com.twopilogue.intervyou.community.entity.Community;
 import com.twopilogue.intervyou.community.exception.CommunityErrorResult;
@@ -61,17 +59,32 @@ public class CommunityService {
         return comment;
     }
 
-    public WritePostResponse writePost(final User user, final WritePostRequest writePostRequest) {
+    private List<Comment> findComments(final long communityId, final Long parentCommentId) {
+        final List<Comment> comments = new ArrayList<>();
+        final List<Comment> commentList = commentRepository.findAllByCommunityIdAndParentCommentIdOrderByCreateTime(communityId, parentCommentId);
+        for (Comment comment : commentList) {
+            comments.add(comment);
+            comments.addAll(findComments(communityId, comment.getId()));
+        }
+        return comments;
+    }
+
+    public PostResponse writePost(final User user, final WritePostRequest writePostRequest) {
         final Community community = communityRepository.save(Community.builder()
                 .title(writePostRequest.getTitle())
                 .content(writePostRequest.getContent())
                 .nickname(user.getNickname())
                 .build());
 
-        return WritePostResponse.builder()
+        return PostResponse.builder()
                 .communityId(community.getId())
+                .title(community.getTitle())
+                .content(community.getContent())
+                .nickname(community.getNickname())
+                .createTime(localDateTimeToString(community.getCreateTime()))
+                .commentCount(0)
+                .comments(new ArrayList<>())
                 .build();
-
     }
 
     public PostResponse readPost(final long communityId) {
@@ -107,16 +120,6 @@ public class CommunityService {
                 .build();
     }
 
-    private List<Comment> findComments(final long communityId, final Long parentCommentId) {
-        final List<Comment> comments = new ArrayList<>();
-        final List<Comment> commentList = commentRepository.findAllByCommunityIdAndParentCommentIdOrderByCreateTime(communityId, parentCommentId);
-        for (Comment comment : commentList) {
-            comments.add(comment);
-            comments.addAll(findComments(communityId, comment.getId()));
-        }
-        return comments;
-    }
-
     public void modifyPost(final User user, final long communityId, final ModifyPostRequest modifyPostRequest) {
         final Community community = findCommunity(user.getNickname(), communityId);
         community.modifyPost(modifyPostRequest.getTitle(), modifyPostRequest.getContent());
@@ -129,7 +132,7 @@ public class CommunityService {
         communityRepository.deleteByCommunityId(communityId, deleteTime);
     }
 
-    public WriteCommentResponse writeComment(final User user, final long communityId, final WriteCommentRequest writeCommentRequest) {
+    public CommentResponse writeComment(final User user, final long communityId, final WriteCommentRequest writeCommentRequest) {
         existValidCommunity(communityId);
         int depth, commentGroup;
         if (writeCommentRequest.getParentCommentId() != null) {
@@ -153,14 +156,13 @@ public class CommunityService {
                 .commentGroup(commentGroup)
                 .build());
 
-        return WriteCommentResponse.builder()
+        return CommentResponse.builder()
+                .isDelete(false)
                 .commentId(comment.getId())
-                .communityId(comment.getCommunityId())
                 .parentCommentId(comment.getParentCommentId())
                 .commentContent(comment.getCommentContent())
                 .nickname(comment.getNickname())
                 .depth(comment.getDepth())
-                .commentGroup(comment.getCommentGroup())
                 .createTime(localDateTimeToString(comment.getCreateTime()))
                 .build();
     }
