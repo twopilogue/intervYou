@@ -34,8 +34,7 @@ public class CommunityService {
     }
 
     private void existValidCommunity(final long communityId) {
-        final Community community = communityRepository.findByIdAndDeleteTimeIsNull(communityId);
-        if (community == null) {
+        if (!communityRepository.existsByIdAndDeleteTimeIsNull(communityId)) {
             throw new CommunityException(CommunityErrorResult.INVALID_POST);
         }
     }
