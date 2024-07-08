@@ -31,6 +31,11 @@ public class CommunityController {
         return new ResponseEntity<>(BaseResponse.from(WRITE_POST_SUCCESS_MESSAGE, communityService.writePost(principalDetails.getUser(), writePostRequest)), HttpStatus.OK);
     }
 
+    @GetMapping("/{communityId}")
+    public ResponseEntity<BaseResponse> readPost(@PathVariable final long communityId) {
+        return new ResponseEntity<>(BaseResponse.from(READ_POST_SUCCESS_MESSAGE, communityService.readPost(communityId)), HttpStatus.OK);
+    }
+
     @PutMapping("/{communityId}")
     public ResponseEntity<BaseResponse> modifyPost(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                                    @PathVariable final long communityId,

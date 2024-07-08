@@ -4,6 +4,8 @@ import com.twopilogue.intervyou.community.dto.request.ModifyCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.ModifyPostRequest;
 import com.twopilogue.intervyou.community.dto.request.WriteCommentRequest;
 import com.twopilogue.intervyou.community.dto.request.WritePostRequest;
+import com.twopilogue.intervyou.community.dto.response.CommentResponse;
+import com.twopilogue.intervyou.community.dto.response.PostResponse;
 import com.twopilogue.intervyou.community.dto.response.WriteCommentResponse;
 import com.twopilogue.intervyou.community.dto.response.WritePostResponse;
 import com.twopilogue.intervyou.community.entity.Comment;
@@ -19,6 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +40,7 @@ public class CommunityService {
     }
 
     private void existValidCommunity(final long communityId) {
-        final Community community = communityRepository.findByIdAndDeleteTimeIsNull(communityId);
-        if (community == null) {
+        if (!communityRepository.existsByIdAndDeleteTimeIsNull(communityId)) {
             throw new CommunityException(CommunityErrorResult.INVALID_POST);
         }
     }
@@ -67,6 +72,49 @@ public class CommunityService {
                 .communityId(community.getId())
                 .build();
 
+    }
+
+    public PostResponse readPost(final long communityId) {
+        final Optional<Community> community_opt = communityRepository.findById(communityId);
+        if (!community_opt.isPresent()) {
+            throw new CommunityException(CommunityErrorResult.INVALID_POST);
+        }
+
+        final Community community = community_opt.get();
+        if (community.getDeleteTime() != null) {
+            throw new CommunityException(CommunityErrorResult.REMOVED_POST);
+        }
+
+        final List<Comment> comments = findComments(communityId, null);
+        return PostResponse.builder()
+                .communityId(community.getId())
+                .title(community.getTitle())
+                .content(community.getContent())
+                .nickname(community.getNickname())
+                .createTime(localDateTimeToString(community.getCreateTime()))
+                .commentCount(comments.size())
+                .comments(comments.stream()
+                        .map(comment -> CommentResponse.builder()
+                                .isDelete(comment.getDeleteTime() != null)
+                                .commentId(comment.getDeleteTime() == null ? comment.getId() : null)
+                                .nickname(comment.getDeleteTime() == null ? comment.getNickname() : null)
+                                .commentContent(comment.getDeleteTime() == null ? comment.getCommentContent() : null)
+                                .createTime(comment.getDeleteTime() == null ? localDateTimeToString(comment.getCreateTime()) : null)
+                                .parentCommentId(comment.getDeleteTime() == null ? comment.getParentCommentId() : null)
+                                .depth(comment.getDepth())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    private List<Comment> findComments(final long communityId, final Long parentCommentId) {
+        final List<Comment> comments = new ArrayList<>();
+        final List<Comment> commentList = commentRepository.findAllByCommunityIdAndParentCommentIdOrderByCreateTime(communityId, parentCommentId);
+        for (Comment comment : commentList) {
+            comments.add(comment);
+            comments.addAll(findComments(communityId, comment.getId()));
+        }
+        return comments;
     }
 
     public void modifyPost(final User user, final long communityId, final ModifyPostRequest modifyPostRequest) {

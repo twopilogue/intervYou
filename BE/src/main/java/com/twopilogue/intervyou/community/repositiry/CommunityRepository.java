@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public interface CommunityRepository extends JpaRepository<Community, Long> {
     Community findByIdAndNicknameAndDeleteTimeIsNull(final long id, final String nickname);
     Community findByIdAndDeleteTimeIsNull(final long id);
+    boolean existsByIdAndDeleteTimeIsNull(final long id);
 
     @Modifying(clearAutomatically = true)
     @Query("update Community c set c.deleteTime = :deleteTime where c.id = :communityId")
