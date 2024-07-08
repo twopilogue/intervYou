@@ -16,6 +16,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Comment findByIdAndNicknameAndCommunityIdAndDeleteTimeIsNull(final long id, final String nickname, final long communityId);
     List<Comment> findAllByCommunityIdAndParentCommentIdOrderByCreateTime(final long communityId, final Long parentCommentId);
     int countByCommunityIdAndDepth(final long communityId, final int depth);
+    int countByCommunityId(final long communityId);
 
     @Modifying(clearAutomatically = true)
     @Query("update Comment c set c.deleteTime = :deleteTime where c.communityId = :communityId and c.deleteTime is null")

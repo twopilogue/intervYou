@@ -25,6 +25,12 @@ public class CommunityController {
 
     private final CommunityService communityService;
 
+    @GetMapping("")
+    public ResponseEntity<BaseResponse> readPostList(@RequestParam int page,
+                                                     @RequestParam(defaultValue = "") final String keyword) {
+        return new ResponseEntity<>(BaseResponse.from(READ_POST_LIST_SUCCESS_MESSAGE, communityService.readPostList(page, keyword)), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<BaseResponse> writePost(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                                   @RequestBody @Valid final WritePostRequest writePostRequest) {
