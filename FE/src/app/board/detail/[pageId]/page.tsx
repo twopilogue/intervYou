@@ -7,7 +7,7 @@ import CommentItem from "../CommentItem";
 export default function BoardDetail({}) {
   const [comment, setComment] = useState("");
   return (
-    <div className="flex h-full w-full flex-col overflow-y-auto *:mx-auto *:w-full *:max-w-[1440px]">
+    <div className="flex h-full w-full flex-col overflow-y-auto *:mx-auto *:w-full *:max-w-[1280px]">
       <div className="flex flex-col gap-2 border-b border-gray-40 p-4">
         <span className="text-base font-bold text-gray-90">GPT가 이런 질문을 했는데요. (제목)</span>
         <div className="flex justify-between *:text-xs *:text-gray-50">
