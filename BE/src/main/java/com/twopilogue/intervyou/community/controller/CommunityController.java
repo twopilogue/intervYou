@@ -39,6 +39,13 @@ public class CommunityController {
         return new ResponseEntity<>(BaseResponse.from(MODIFY_POST_SUCCESS_MESSAGE), HttpStatus.OK);
     }
 
+    @DeleteMapping("/{communityId}")
+    public ResponseEntity<BaseResponse> removePost(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                   @PathVariable final long communityId) {
+        communityService.removePost(principalDetails.getUser(), communityId);
+        return new ResponseEntity<>(BaseResponse.from(REMOVE_POST_SUCCESS_MESSAGE), HttpStatus.OK);
+    }
+
     @PostMapping("/{communityId}/comments")
     public ResponseEntity<BaseResponse> writeComment(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                                      @PathVariable final long communityId,

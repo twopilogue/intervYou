@@ -40,6 +40,14 @@ public class CommunityService {
         }
     }
 
+    private Community findCommunity(final String nickname, final long communityId) {
+        final Community community = communityRepository.findByIdAndNicknameAndDeleteTimeIsNull(communityId, nickname);
+        if (community == null) {
+            throw new CommunityException(CommunityErrorResult.INVALID_POST);
+        }
+        return community;
+    }
+
     private Comment findComment(final String nickname, final long commentId, final long communityId) {
         final Comment comment = commentRepository.findByIdAndNicknameAndCommunityIdAndDeleteTimeIsNull(commentId, nickname, communityId);
         if (comment == null) {
@@ -62,11 +70,15 @@ public class CommunityService {
     }
 
     public void modifyPost(final User user, final long communityId, final ModifyPostRequest modifyPostRequest) {
-        final Community community = communityRepository.findByIdAndNicknameAndDeleteTimeIsNull(communityId, user.getNickname());
-        if (community == null) {
-            throw new CommunityException(CommunityErrorResult.INVALID_POST);
-        }
+        final Community community = findCommunity(user.getNickname(), communityId);
         community.modifyPost(modifyPostRequest.getTitle(), modifyPostRequest.getContent());
+    }
+
+    public void removePost(final User user, final long communityId) {
+        findCommunity(user.getNickname(), communityId);
+        final LocalDateTime deleteTime = LocalDateTime.now();
+        commentRepository.deleteAllByCommunityId(communityId, deleteTime);
+        communityRepository.deleteByCommunityId(communityId, deleteTime);
     }
 
     public WriteCommentResponse writeComment(final User user, final long communityId, final WriteCommentRequest writeCommentRequest) {
