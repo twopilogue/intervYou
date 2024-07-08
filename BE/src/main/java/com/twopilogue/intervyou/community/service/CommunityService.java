@@ -161,17 +161,13 @@ public class CommunityService {
 
     public CommentResponse writeComment(final User user, final long communityId, final WriteCommentRequest writeCommentRequest) {
         existValidCommunity(communityId);
-        int depth, commentGroup;
+        int depth = 0;
         if (writeCommentRequest.getParentCommentId() != null) {
             final Comment parentComment = commentRepository.findByIdAndCommunityIdAndDeleteTimeIsNull(writeCommentRequest.getParentCommentId(), communityId);
             if (parentComment == null) {
                 throw new CommunityException(CommunityErrorResult.INVALID_COMMENT);
             }
             depth = parentComment.getDepth() + 1;
-            commentGroup = parentComment.getCommentGroup();
-        } else {
-            depth = 0;
-            commentGroup = commentRepository.countByCommunityIdAndDepth(communityId, 0);
         }
 
         final Comment comment = commentRepository.save(Comment.builder()
@@ -180,7 +176,6 @@ public class CommunityService {
                 .commentContent(writeCommentRequest.getCommentContent())
                 .nickname(user.getNickname())
                 .depth(depth)
-                .commentGroup(commentGroup)
                 .build());
 
         return CommentResponse.builder()

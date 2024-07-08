@@ -33,8 +33,6 @@ public class Comment {
 
     private int depth;
 
-    private int commentGroup;
-
     @CreationTimestamp
     @Column(name = "create_time")
     private LocalDateTime createTime;
