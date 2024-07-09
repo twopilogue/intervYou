@@ -45,4 +45,11 @@ public class InterviewController {
                                                              @PathVariable final Long interviewId) {
         return new ResponseEntity<>(BaseResponse.from(READ_ONGOING_INTERVIEW_RECORD_SUCCESS_MESSAGE, interviewService.readOngoingInterview(principalDetails.getUser(), interviewId)), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{interviewId}")
+    public ResponseEntity<BaseResponse> endInterview(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                     @PathVariable final Long interviewId) {
+        interviewService.endInterview(principalDetails.getUser(), interviewId);
+        return new ResponseEntity<>(BaseResponse.from(END_INTERVIEW_MESSAGE), HttpStatus.OK);
+    }
 }
