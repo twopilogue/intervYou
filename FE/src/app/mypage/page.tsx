@@ -2,15 +2,15 @@
 
 import { useRouter } from "next/navigation";
 
-interface MenuTapProps extends HTMLElement {
+interface MenuTapProps {
   title: string;
   isLink?: boolean;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
-const MenuTab = ({ title, isLink = true, ...props }) => {
+const MenuTab = ({ title, isLink = true, onClick }: MenuTapProps) => {
   return (
-    <div className="flex cursor-pointer justify-between" {...props}>
+    <div className="flex cursor-pointer justify-between" onClick={onClick}>
       <span>{title}</span>
       {isLink && (
         <svg className="h-5 w-5 text-gray-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
