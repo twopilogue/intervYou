@@ -5,6 +5,7 @@ import com.twopilogue.intervyou.interview.dto.chatgpt.ChatGPTResponse;
 import com.twopilogue.intervyou.interview.dto.chatgpt.Message;
 import com.twopilogue.intervyou.interview.dto.request.StartInterviewRequest;
 import com.twopilogue.intervyou.interview.dto.response.CheckOngoingInterviewResponse;
+import com.twopilogue.intervyou.interview.dto.response.InterviewContentResponse;
 import com.twopilogue.intervyou.interview.dto.response.InterviewResponse;
 import com.twopilogue.intervyou.interview.dto.response.StartInterviewResponse;
 import com.twopilogue.intervyou.interview.entity.Interview;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -102,7 +104,7 @@ public class InterviewService {
 
         return StartInterviewResponse.builder()
                 .interviewId(interview.getId())
-                .question(InterviewResponse.builder()
+                .question(InterviewContentResponse.builder()
                         .sequence(interviewSequence.getSequence())
                         .content(interviewSequence.getContent())
                         .createTime(localDateTimeToString(interviewSequence.getCreateTime()))
@@ -112,11 +114,31 @@ public class InterviewService {
 
     public CheckOngoingInterviewResponse checkOngoingInterview(final User user) {
         final Interview interview = interviewRepository.findByUserIdAndIsActiveTrue(user.getId());
-        if(interview == null) {
+        if (interview == null) {
             return null;
         }
         return CheckOngoingInterviewResponse.builder()
                 .interviewId(interview.getId())
+                .build();
+    }
+
+    public InterviewResponse readOngoingInterview(final User user, final Long interviewId) {
+        final Interview interview = interviewRepository.findByUserIdAndIsActiveTrue(user.getId());
+        if (interview == null || !interview.getId().equals(interviewId)) {
+            throw new InterviewException(InterviewErrorResult.BAD_REQUEST);
+        }
+
+        final List<InterviewSequence> interviewSequenceList = interviewSequenceRepository.findAllByInterviewIdOrderBySequence(interviewId);
+        return InterviewResponse.builder()
+                .interviewId(interview.getId())
+                .createTime(localDateTimeToString(interview.getCreateTime()))
+                .interviews(interviewSequenceList.stream().map(
+                        interviewSequence -> InterviewContentResponse.builder()
+                                .sequence(interviewSequence.getSequence())
+                                .content(interviewSequence.getContent())
+                                .createTime(localDateTimeToString(interviewSequence.getCreateTime()))
+                                .build()
+                ).collect(Collectors.toList()))
                 .build();
     }
 }

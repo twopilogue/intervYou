@@ -39,4 +39,10 @@ public class InterviewController {
             return new ResponseEntity<>(BaseResponse.from(ONGOING_INTERVIEW_MESSAGE, checkOngoingInterviewResponse), HttpStatus.OK);
         }
     }
+
+    @GetMapping("/{interviewId}")
+    public ResponseEntity<BaseResponse> readOngoingInterview(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                             @PathVariable final Long interviewId) {
+        return new ResponseEntity<>(BaseResponse.from(READ_ONGOING_INTERVIEW_RECORD_SUCCESS_MESSAGE, interviewService.readOngoingInterview(principalDetails.getUser(), interviewId)), HttpStatus.OK);
+    }
 }
