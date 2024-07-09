@@ -9,7 +9,7 @@ const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const link = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&state=state`;
 
 export const Header = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false);
   const [open, setOpen] = useState(false);
 
   const handleLinks = (event: MouseEvent<HTMLDivElement>) => {
