@@ -3,19 +3,33 @@
 import axios from "axios";
 import CommentItem from "../CommentItem";
 import CommentInput from "../CommentInput";
+import Link from "next/link";
 import { CommunityConfig } from "../../../../interfaces/community.interface";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../../../slices/auth.slice";
-import Link from "next/link";
+import { useShallow } from "zustand/react/shallow";
+import { useRouter } from "next/navigation";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function CommunityDetail({ params }: { params: { pageId: number } }) {
-  const userNickname = useAuthStore((state) => state.nickname);
+  const router = useRouter();
+  const [accessToken, userNickname] = useAuthStore(useShallow((state) => [state.accessToken, state.nickname]));
   const [communityInfo, setCommunityInfo] = useState<CommunityConfig>(Object);
   const isMine = communityInfo.nickname === userNickname;
 
-  const handleDelete = () => {};
+  const handleDelete = () => {
+    axios
+      .delete(`${BASE_URL}/api/communities/${params.pageId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        router.push("/community");
+      })
+      .catch((err) => console.error(err));
+  };
 
   useEffect(() => {
     axios
