@@ -3,13 +3,14 @@
 import React, { MouseEvent, useState } from "react";
 import { Modal } from "@mui/base";
 import Link from "next/link";
+import { useAuthStore } from "../../../slices/auth.slice";
 
 const REDIRECT_URL = process.env.NEXT_PUBLIC_REDIRECT_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
 const link = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URL}&state=state`;
 
 export const Header = () => {
-  const [isLogin, setIsLogin] = useState(false);
+  const isLogin = useAuthStore((state) => state.isLogin);
   const [open, setOpen] = useState(false);
 
   const handleLinks = (event: MouseEvent<HTMLDivElement>) => {
