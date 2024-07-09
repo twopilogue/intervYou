@@ -33,4 +33,8 @@ public class Interview {
 
     @Column(name = "user_id")
     private Long userId;
+
+    public void endInterview() {
+        isActive = false;
+    }
 }

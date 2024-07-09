@@ -125,7 +125,7 @@ public class InterviewService {
     public InterviewResponse readOngoingInterview(final User user, final Long interviewId) {
         final Interview interview = interviewRepository.findByUserIdAndIsActiveTrue(user.getId());
         if (interview == null || !interview.getId().equals(interviewId)) {
-            throw new InterviewException(InterviewErrorResult.BAD_REQUEST);
+            throw new InterviewException(InterviewErrorResult.NO_ONGOING_INTERVIEW);
         }
 
         final List<InterviewSequence> interviewSequenceList = interviewSequenceRepository.findAllByInterviewIdOrderBySequence(interviewId);
@@ -140,5 +140,13 @@ public class InterviewService {
                                 .build()
                 ).collect(Collectors.toList()))
                 .build();
+    }
+
+    public void endInterview(final User user, final Long interviewId) {
+        final Interview interview = interviewRepository.findByUserIdAndIsActiveTrue(user.getId());
+        if (interview == null || !interview.getId().equals(interviewId)) {
+            throw new InterviewException(InterviewErrorResult.INVALID_INTERVIEW_ID);
+        }
+        interview.endInterview();
     }
 }
