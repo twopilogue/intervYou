@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface InterviewRepository extends JpaRepository<Interview, Long> {
     boolean existsByUserIdAndIsActiveTrue(final long userId);
+    Interview findByUserIdAndIsActiveTrue(final long userId);
 }
