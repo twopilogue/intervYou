@@ -46,7 +46,7 @@ export const Header = () => {
             {isLogin ? (
               <>
                 <Link href="/list">면접 내역</Link>
-                <Link href="/board">커뮤니티</Link>
+                <Link href="/community">커뮤니티</Link>
                 <Link href="/mypage">마이페이지</Link>
               </>
             ) : (
@@ -54,7 +54,7 @@ export const Header = () => {
                 <Link className="text-[#2DB400]" href={link}>
                   네이버 로그인
                 </Link>
-                <Link href="/board">커뮤니티</Link>
+                <Link href="/community">커뮤니티</Link>
               </>
             )}
           </div>
@@ -73,7 +73,7 @@ export const Header = () => {
                 <>
                   <Link href="/create">면접 시작</Link>
                   <Link href="/list">면접 내역</Link>
-                  <Link href="/board">커뮤니티</Link>
+                  <Link href="/community">커뮤니티</Link>
                   <Link href="/mypage">마이페이지</Link>
                 </>
               ) : (
@@ -81,7 +81,7 @@ export const Header = () => {
                   <Link className="text-[#2DB400]" href={link}>
                     네이버 로그인
                   </Link>
-                  <Link href="/board">커뮤니티</Link>
+                  <Link href="/community">커뮤니티</Link>
                 </>
               )}
             </div>

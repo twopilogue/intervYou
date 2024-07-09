@@ -1,11 +1,12 @@
 "use client";
 
+import { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import "../styles/globals.css";
 import { Header } from "./_components/header/Header";
 import ChatHeader from "./chat/_components/Header";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   return (
     <html>

@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import { Button } from "../_components/button/Button";
 import { SearchField } from "../_components/input/SearchField";
-import BoardFrame from "./BoardFrame";
+import CommunityFrame from "./CommunityFrame";
 import Pagination from "./Pagination";
 
-export default function Board({}) {
+export default function Community({}) {
   const router = useRouter();
   return (
     <div className="flex h-full flex-col *:mx-auto *:w-full [&>*:not(:nth-child(1))]:max-w-[1280px]">
@@ -19,10 +19,10 @@ export default function Board({}) {
         <div className="w-full flex-1">
           <SearchField name="search" placeholder="검색어를 입력하세요." />
         </div>
-        <Button onClick={() => router.push("/board/create")}>새 글 작성</Button>
+        <Button onClick={() => router.push("/community/create")}>새 글 작성</Button>
       </div>
       <div className="h-full overflow-y-auto px-4">
-        <BoardFrame />
+        <CommunityFrame />
         <Pagination />
       </div>
     </div>
