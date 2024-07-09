@@ -1,11 +1,12 @@
 package com.twopilogue.intervyou.interview.service;
 
-import com.twopilogue.intervyou.interview.dto.request.StartInterviewRequest;
 import com.twopilogue.intervyou.interview.dto.chatgpt.ChatGPTRequest;
+import com.twopilogue.intervyou.interview.dto.chatgpt.ChatGPTResponse;
 import com.twopilogue.intervyou.interview.dto.chatgpt.Message;
+import com.twopilogue.intervyou.interview.dto.request.StartInterviewRequest;
+import com.twopilogue.intervyou.interview.dto.response.CheckOngoingInterviewResponse;
 import com.twopilogue.intervyou.interview.dto.response.InterviewResponse;
 import com.twopilogue.intervyou.interview.dto.response.StartInterviewResponse;
-import com.twopilogue.intervyou.interview.dto.chatgpt.ChatGPTResponse;
 import com.twopilogue.intervyou.interview.entity.Interview;
 import com.twopilogue.intervyou.interview.entity.InterviewSequence;
 import com.twopilogue.intervyou.interview.exception.InterviewErrorResult;
@@ -109,4 +110,13 @@ public class InterviewService {
                 .build();
     }
 
+    public CheckOngoingInterviewResponse checkOngoingInterview(final User user) {
+        final Interview interview = interviewRepository.findByUserIdAndIsActiveTrue(user.getId());
+        if(interview == null) {
+            return null;
+        }
+        return CheckOngoingInterviewResponse.builder()
+                .interviewId(interview.getId())
+                .build();
+    }
 }
