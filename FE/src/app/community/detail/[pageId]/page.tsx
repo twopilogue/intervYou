@@ -1,13 +1,28 @@
+"use client";
+
 import axios from "axios";
 import CommentItem from "../CommentItem";
 import CommentInput from "../CommentInput";
 import { CommunityConfig } from "../../../../interfaces/community.interface";
+import { useEffect, useState } from "react";
+import { useAuthStore } from "../../../../slices/auth.slice";
+import Link from "next/link";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export default async function CommunityDetail({ params }: { params: { pageId: number } }) {
-  const res = await axios.get(`${BASE_URL}/api/communities/${params.pageId}`);
-  const communityInfo: CommunityConfig = res.data.data;
+export default function CommunityDetail({ params }: { params: { pageId: number } }) {
+  const userNickname = useAuthStore((state) => state.nickname);
+  const [communityInfo, setCommunityInfo] = useState<CommunityConfig>(Object);
+  const isMine = communityInfo.nickname === userNickname;
+
+  const handleDelete = () => {};
+
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/api/communities/${params.pageId}`)
+      .then((res) => setCommunityInfo(res.data.data))
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <div className="flex h-full w-full flex-col overflow-y-auto *:mx-auto *:w-full *:max-w-[1280px]">
@@ -15,7 +30,17 @@ export default async function CommunityDetail({ params }: { params: { pageId: nu
         <span className="text-base font-bold text-gray-90">{communityInfo.title}</span>
         <div className="flex justify-between *:text-xs *:text-gray-50">
           <span>{communityInfo.nickname}</span>
-          <span>{communityInfo.createTime}</span>
+          <div className="flex gap-4">
+            <span>{communityInfo.createTime}</span>
+            {isMine && (
+              <div className="underline underline-offset-4 *:mr-2 *:cursor-pointer">
+                <Link href={`/community/edit/${params.pageId}`}>수정</Link>
+                <span className="text-danger-text" onClick={handleDelete}>
+                  삭제
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className="px-4 py-8">

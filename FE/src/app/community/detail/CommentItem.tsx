@@ -15,15 +15,15 @@ export default function CommentItem({ comment }: CommentItemProps) {
     const replied = depth === 0;
     const isMine = nickname === userNickname;
     return (
-      <div className="flex w-full flex-col gap-2 p-2 text-sm">
-        <div className="flex justify-between text-gray-50">
+      <div className="flex w-full flex-col gap-2 p-2">
+        <div className="flex justify-between text-xs text-gray-50">
           <span>{nickname}</span>
           <span>{createTime.toString()}</span>
         </div>
-        <div className="rounded-lg py-2">
+        <div className="rounded-lg py-2 text-sm">
           <span className="text-gray-90">{commentContent}</span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between text-xs">
           {replied ? (
             <span className="cursor-pointer text-gray-50 underline underline-offset-4">댓글 달기</span>
           ) : (

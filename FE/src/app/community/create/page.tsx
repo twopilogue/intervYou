@@ -6,37 +6,68 @@ import TextArea from "./TextArea";
 import { Button } from "../../_components/button/Button";
 import axios from "axios";
 import { useAuthStore } from "../../../slices/auth.slice";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+
+interface CommunityCreateProps {
+  editTitle?: string;
+  editContent?: string;
+  communityId?: number;
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export default function BoardCreate({}) {
+export default function CommunityCreate({ editTitle, editContent, communityId }: CommunityCreateProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isEdit = pathname.includes("/edit");
   const accessToken = useAuthStore((state) => state.accessToken);
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState(editTitle ?? "");
+  const [content, setContent] = useState(editContent ?? "");
 
   const handleSave = () => {
     if (title.length < 1 || content.length < 1) return;
-    axios
-      .post(
-        `${BASE_URL}/api/communities`,
-        {
-          title,
-          content,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
+    if (isEdit) {
+      // 수정
+      axios
+        .put(
+          `${BASE_URL}/api/communities/${communityId}`,
+          {
+            title,
+            content,
           },
-        },
-      )
-      .then((res) => {
-        console.log(res.data);
-        const communityId = res.data.data.communityId;
-        router.push(`/community/detail/${communityId}`);
-      })
-      .catch((err) => console.error(err));
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        )
+        .then((res) => {
+          console.info(res.data);
+          router.push(`/community/detail/${communityId}`);
+        })
+        .catch((err) => console.error(err));
+    } else {
+      // 저장
+      axios
+        .post(
+          `${BASE_URL}/api/communities`,
+          {
+            title,
+            content,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        )
+        .then((res) => {
+          console.log(res.data);
+          const communityId = res.data.data.communityId;
+          router.push(`/community/detail/${communityId}`);
+        })
+        .catch((err) => console.error(err));
+    }
   };
   return (
     <div className="flex h-full flex-col *:mx-auto *:w-full [&>*:not(:nth-child(1))]:max-w-[640px]">
