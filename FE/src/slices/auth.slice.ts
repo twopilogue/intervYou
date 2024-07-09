@@ -31,7 +31,6 @@ export const useAuthStore = create<AuthState & AuthAction>()(
         actions: {
           login: async (userId, nickname, accessToken) => set(() => ({ isLogin: true, userId, nickname, accessToken })),
           logout: () => {
-            console.log("logout?;;;");
             set(() => ({ isLogin: false, userId: null, nickname: null, accessToken: null }));
             localStorage.removeItem("auth");
           },
