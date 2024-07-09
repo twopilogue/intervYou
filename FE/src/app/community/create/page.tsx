@@ -4,9 +4,40 @@ import { useState } from "react";
 import { InputField } from "../../_components/input/InputField";
 import TextArea from "./TextArea";
 import { Button } from "../../_components/button/Button";
+import axios from "axios";
+import { useAuthStore } from "../../../slices/auth.slice";
+import { useRouter } from "next/navigation";
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function BoardCreate({}) {
-  const [contents, setContents] = useState("");
+  const router = useRouter();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  const handleSave = () => {
+    if (title.length < 1 || content.length < 1) return;
+    axios
+      .post(
+        `${BASE_URL}/api/communities`,
+        {
+          title,
+          content,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      )
+      .then((res) => {
+        console.log(res.data);
+        const communityId = res.data.data.communityId;
+        router.push(`/community/detail/${communityId}`);
+      })
+      .catch((err) => console.error(err));
+  };
   return (
     <div className="flex h-full flex-col *:mx-auto *:w-full [&>*:not(:nth-child(1))]:max-w-[640px]">
       <div className="mx-auto mb-4 flex w-full items-center bg-lightblue px-4 py-8">
@@ -16,14 +47,20 @@ export default function BoardCreate({}) {
       </div>
       <div className="flex h-full flex-col gap-4 max-sm:px-4">
         <div className="h-min">
-          <InputField name="title" label="제목" placeholder="제목을 입력하세요." />
+          <InputField
+            name="title"
+            value={title}
+            label="제목"
+            placeholder="제목을 입력하세요."
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
         <div className="h-full">
           <TextArea
-            name="contents"
+            name="content"
             placeholder="내용을 입력하세요."
-            value={contents}
-            onChange={(e) => setContents(e.target.value)}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
           />
         </div>
         <div className="mb-8">
@@ -34,7 +71,13 @@ export default function BoardCreate({}) {
         </div>
         <div className="mb-8 flex w-full justify-center gap-4 px-4 *:min-w-32 max-sm:bottom-4 sm:bottom-8">
           <Button types="gray">취소</Button>
-          <Button>등록하기</Button>
+          <Button
+            types={title.length < 1 || content.length < 1 ? "gray" : "primary"}
+            disabled={title.length < 1 || content.length < 1}
+            onClick={handleSave}
+          >
+            등록하기
+          </Button>
         </div>
       </div>
     </div>
