@@ -25,12 +25,12 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
       .catch((err) => console.error(err));
   };
 
-  const handleSaveComment = (comment: string) => {
+  const handleSaveComment = (comment: string, parentCommendId?: number) => {
     axios
       .post(
         `${BASE_URL}/api/communities/${communityInfo.communityId}/comments`,
         {
-          parentCommentId: null,
+          parentCommentId: parentCommendId ?? null,
           commentContent: comment,
         },
         {
@@ -115,7 +115,7 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
       </div>
       <div className="px-4">
         <span className="mb-4 block border-b border-gray-40 pb-4 text-sm font-bold text-gray-90">댓글</span>
-        <CommentInput editable={false} handleSave={handleSaveComment} />
+        <CommentInput types="save" handleSave={handleSaveComment} />
         <div className="mt-4 flex flex-col gap-2">
           {communityInfo.commentCount < 1 ? (
             <>작성된 댓글이 없습니다.</>
@@ -125,6 +125,7 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
                 <CommentItem
                   key={key}
                   comment={comment}
+                  handleSave={handleSaveComment}
                   handleEdit={handleEditComment}
                   handleDelete={handleDeleteComment}
                 />

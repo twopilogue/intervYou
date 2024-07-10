@@ -4,26 +4,26 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "../../_components/button/Button";
 
 interface CommentInputProps {
-  editable: boolean;
+  types: "save" | "edit" | "reply";
   editContent?: string;
   commentId?: number;
-  setIsEdit?: Dispatch<SetStateAction<boolean>>;
+  setClose?: () => void;
   handleEdit?: (commentId: number, comment: string) => void;
-  handleSave?: (comment: string) => void;
+  handleSave?: (comment: string, parentCommentId?: number) => void;
 }
 
 export default function CommentInput({
-  editable,
+  types,
   editContent,
   commentId,
-  setIsEdit,
+  setClose,
   handleEdit,
   handleSave,
 }: CommentInputProps) {
   const [comment, setComment] = useState(editContent ?? "");
 
   return (
-    <div className="flex items-end gap-2">
+    <div className="flex w-full items-end gap-2">
       <textarea
         rows={4}
         className="w-full flex-grow resize-none overflow-hidden overflow-y-auto rounded-lg border border-gray-30 px-2.5 py-2.5 text-sm text-gray-90 outline-none focus:border-primary"
@@ -31,14 +31,8 @@ export default function CommentInput({
         onChange={(e) => setComment(e.target.value)}
       />
       <div className="flex flex-shrink-0 flex-col gap-2">
-        {editable && (
-          <Button
-            size="small"
-            types="gray"
-            onClick={() => {
-              setIsEdit && setIsEdit(false);
-            }}
-          >
+        {types !== "save" && (
+          <Button size="small" types="gray" onClick={() => setClose && setClose()}>
             취소
           </Button>
         )}
@@ -48,10 +42,13 @@ export default function CommentInput({
           size="small"
           onClick={() => {
             if (comment.length < 1) return;
-            if (editable && handleEdit) handleEdit(commentId!, comment);
-            else if (handleSave) handleSave(comment);
+            if (types === "edit" && handleEdit) handleEdit(commentId!, comment);
+            else if (handleSave) {
+              if (types === "save") handleSave(comment);
+              else if (types === "reply") handleSave(comment, commentId);
+            }
             setComment("");
-            if (editable && setIsEdit) setIsEdit(false);
+            setClose && setClose();
           }}
         >
           등록
