@@ -43,23 +43,12 @@ jobs:
           cd ./BE
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_BACKEND_NAME }}
 
-      - name: Get GitHub IP
-        id: ip
-        uses: haythem/public-ip@v1.3
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Add Github Actions IP to Security group
-        run: |
-          aws ec2 authorize-security-group-ingress \
-          --group-id ${{ secrets.AWS_SG_ID }} \
-          --protocol tcp --port 22 \
-          --cidr ${{ steps.ip.outputs.ipv4 }}/32
 
       - name: AWS EC2 Connection
         uses: appleboy/ssh-action@v0.1.6
@@ -73,10 +62,3 @@ jobs:
             sudo docker stop ${{ secrets.DOCKERHUB_BACKEND_NAME }}
             sudo docker rm ${{ secrets.DOCKERHUB_BACKEND_NAME }}
             sudo docker run -it -d -p 8080:8080 --name ${{ secrets.DOCKERHUB_BACKEND_NAME }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_BACKEND_NAME }}
-
-      - name: Remove IP FROM security group
-        run: |
-          aws ec2 revoke-security-group-ingress \
-          --group-id ${{ secrets.AWS_SG_ID }} \
-          --protocol tcp --port 22 \
-          --cidr ${{ steps.ip.outputs.ipv4 }}/32
