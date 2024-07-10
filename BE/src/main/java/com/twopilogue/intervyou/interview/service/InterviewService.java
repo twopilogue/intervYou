@@ -49,20 +49,25 @@ public class InterviewService {
 
     private String makePrompt(final StartInterviewRequest startInterviewRequest) {
         final StringBuilder prompt_sb = new StringBuilder();
-        prompt_sb.append(startInterviewRequest.getJob()).append("직무에 지원했는데, 면접 시뮬레이션하자.");
+        prompt_sb.append(startInterviewRequest.getJob()).append("직무에 지원했는데, 면접 시뮬레이션을 진행해 주세요.");
         if (startInterviewRequest.getInterviewType() == 1) {
-            prompt_sb.append("{");
-            for (String question : startInterviewRequest.getQuestionList()) {
-                prompt_sb.append(question).append(",");
-            }
-            prompt_sb.append("} 여기에서 랜덤하게 질문해줘.");
+            prompt_sb.append("아래 질문 목록에서 무작위로 하나씩 질문해 주세요. ");
         } else if (startInterviewRequest.getInterviewType() == 2) {
-            prompt_sb.append("면접관으로 ").append(startInterviewRequest.getQuestionType()).append(" 질문을 ").append(startInterviewRequest.getQuestionCount()).append("개").append("해줘.");
-
+            prompt_sb.append(startInterviewRequest.getQuestionType()).append("에 관한 질문을 ").append(startInterviewRequest.getQuestionCount()).append("개를 만들어서 하나씩 질문해 주세요.");
         } else {
             throw new InterviewException(InterviewErrorResult.BAD_REQUEST);
         }
-        prompt_sb.append("네가 질문 하나를 말하면 내가 대답을 한번하는 식으로 번갈아가면서 할거고, 피드백은 면접이 끝나고 마지막에 개선점 위주로 말해주면 좋겠어. 질문할 때는 사족없이 번호랑 질문만 보내줘.");
+        prompt_sb.append("제가 답변을 한 후에 다음 질문을 해 주세요. 질문과 답변을 번갈아 가면서 진행합시다. GPT는 답변하지 말고 질문만 해 주세요. 피드백은 면접이 끝나고 마지막에 개선점 위주로 주시면 됩니다.");
+        prompt_sb.append("\n").append("\n").append("질문할 때는 번호와 질문만 보내주세요.");
+
+        if (startInterviewRequest.getInterviewType() == 1) {
+            prompt_sb.append("\n").append("\n").append("질문 목록:");
+            for (String question : startInterviewRequest.getQuestionList()) {
+                prompt_sb.append("\n").append(question);
+            }
+        }
+        prompt_sb.append("\n").append("\n").append("면접 시작하겠습니다. 질문 하나를 하시면 제가 답변하겠습니다.");
+
         return prompt_sb.toString();
     }
 
