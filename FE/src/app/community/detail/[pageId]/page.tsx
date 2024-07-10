@@ -39,9 +39,24 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
           },
         },
       )
-      .then((res) => {
-        handleGetDetail();
-      })
+      .then(() => handleGetDetail())
+      .catch((err) => console.error(err));
+  };
+
+  const handleEditComment = (commentId: number, comment: string) => {
+    axios
+      .put(
+        `${BASE_URL}/api/communities/${communityInfo.communityId}/comments/${commentId}`,
+        {
+          commentContent: comment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      )
+      .then(() => handleGetDetail())
       .catch((err) => console.error(err));
   };
 
@@ -52,9 +67,7 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
           Authorization: `Bearer ${accessToken}`,
         },
       })
-      .then((res) => {
-        handleGetDetail();
-      })
+      .then(() => handleGetDetail())
       .catch((err) => console.error(err));
   };
 
@@ -65,9 +78,7 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
           Authorization: `Bearer ${accessToken}`,
         },
       })
-      .then(() => {
-        router.push("/community");
-      })
+      .then(() => router.push("/community"))
       .catch((err) => console.error(err));
   };
 
@@ -103,15 +114,20 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
         </div>
       </div>
       <div className="px-4">
-        <span className="block pb-4 text-sm font-bold text-gray-90">댓글</span>
-        <CommentInput handleSave={handleSaveComment} />
-        <div className="flex flex-col gap-2">
+        <span className="mb-4 block border-b border-gray-40 pb-4 text-sm font-bold text-gray-90">댓글</span>
+        <CommentInput editable={false} handleSave={handleSaveComment} />
+        <div className="mt-4 flex flex-col gap-2">
           {communityInfo.commentCount < 1 ? (
             <>작성된 댓글이 없습니다.</>
           ) : (
             <>
               {communityInfo.comments?.map((comment, key) => (
-                <CommentItem key={key} comment={comment} handleDelete={handleDeleteComment} />
+                <CommentItem
+                  key={key}
+                  comment={comment}
+                  handleEdit={handleEditComment}
+                  handleDelete={handleDeleteComment}
+                />
               ))}
             </>
           )}
