@@ -4,10 +4,7 @@ import com.twopilogue.intervyou.interview.dto.chatgpt.ChatGPTRequest;
 import com.twopilogue.intervyou.interview.dto.chatgpt.ChatGPTResponse;
 import com.twopilogue.intervyou.interview.dto.chatgpt.Message;
 import com.twopilogue.intervyou.interview.dto.request.StartInterviewRequest;
-import com.twopilogue.intervyou.interview.dto.response.CheckOngoingInterviewResponse;
-import com.twopilogue.intervyou.interview.dto.response.InterviewContentResponse;
-import com.twopilogue.intervyou.interview.dto.response.InterviewResponse;
-import com.twopilogue.intervyou.interview.dto.response.StartInterviewResponse;
+import com.twopilogue.intervyou.interview.dto.response.*;
 import com.twopilogue.intervyou.interview.entity.Interview;
 import com.twopilogue.intervyou.interview.entity.InterviewSequence;
 import com.twopilogue.intervyou.interview.exception.InterviewErrorResult;
@@ -167,5 +164,25 @@ public class InterviewService {
 
         interviewSequenceRepository.deleteAllByInterviewId(interviewId);
         interviewRepository.delete(interview);
+    }
+
+    public InterviewRecordListResponse readInterviewList(final User user, final long last) {
+        List<Interview> interviewList;
+        if (last == 0) {
+            interviewList = interviewRepository.findTop10ByUserIdOrderByIdDesc(user.getId());
+        } else {
+            interviewList = interviewRepository.findTop10ByUserIdAndIdLessThanOrderByIdDesc(user.getId(), last);
+        }
+
+        return InterviewRecordListResponse.builder()
+                .records(interviewList.stream().map(
+                                interview -> InterviewRecordResponse.builder()
+                                        .interviewId(interview.getId())
+                                        .interviewInfo(interview.getJob())
+                                        .createTime(localDateTimeToString(interview.getCreateTime()))
+                                        .isActive(interview.getIsActive())
+                                        .build())
+                        .collect(Collectors.toList()))
+                .build();
     }
 }
