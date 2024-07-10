@@ -1,5 +1,5 @@
 import axios from "axios";
-import CommunityCreate from "../../create/page";
+import CommunityCreate from "../../create/CommunityCreate";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
