@@ -10,5 +10,6 @@ import java.util.List;
 public class InterviewResponse {
     private long interviewId;
     private String createTime;
+    private Boolean isActive;
     private List<InterviewContentResponse> interviews;
 }
