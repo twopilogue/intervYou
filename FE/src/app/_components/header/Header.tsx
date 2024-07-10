@@ -5,6 +5,7 @@ import { Modal } from "@mui/base";
 import Link from "next/link";
 import { useAuthStore } from "../../../slices/auth.slice";
 import ModalAlert from "../modal/alert/ModalAlert";
+import ModalMenu from "../modal/menu/ModalMenu";
 
 const REDIRECT_URL = process.env.NEXT_PUBLIC_REDIRECT_URL;
 const CLIENT_ID = process.env.NEXT_PUBLIC_CLIENT_ID;
@@ -16,7 +17,7 @@ export const Header = () => {
   const [openAlert, setOpenAlert] = useState(false);
   const [hasAlert, setHasAlert] = useState(false);
 
-  const handleLinks = (event: MouseEvent<HTMLDivElement>) => {
+  const handleLink = (event: MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLElement;
     if (target.closest("a") && openMenu) setOpenMenu(false);
   };
@@ -92,30 +93,7 @@ export const Header = () => {
       </div>
       {openMenu && (
         <Modal open={openMenu}>
-          <div className="absolute top-0 h-full w-full bg-white px-4 outline-none">
-            <div className="my-8 cursor-pointer" onClick={() => setOpenMenu(false)}>
-              <svg className="h-6 w-6 text-gray-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </div>
-            <div className="flex flex-col gap-4 *:cursor-pointer" onClick={handleLinks}>
-              {isLogin ? (
-                <>
-                  <Link href="/create">면접 시작</Link>
-                  <Link href="/list">면접 내역</Link>
-                  <Link href="/community">커뮤니티</Link>
-                  <Link href="/mypage">마이페이지</Link>
-                </>
-              ) : (
-                <>
-                  <Link className="text-[#2DB400]" href={link}>
-                    네이버 로그인
-                  </Link>
-                  <Link href="/community">커뮤니티</Link>
-                </>
-              )}
-            </div>
-          </div>
+          <ModalMenu onClose={() => setOpenMenu(false)} handleLink={(e) => handleLink(e)} isLogin={isLogin} />
         </Modal>
       )}
       {openAlert && (

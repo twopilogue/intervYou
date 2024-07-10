@@ -5,7 +5,7 @@ interface ModalAlertProps {
   onClose: () => void;
 }
 
-const ModalAlert = forwardRef(({ onClose }: ModalAlertProps) => {
+const ModalAlert = forwardRef(({ onClose }: ModalAlertProps, ref) => {
   return (
     <div className="absolute top-0 h-full w-96 bg-white px-2 outline-none max-sm:h-full max-sm:w-full sm:right-0 sm:top-[4rem] sm:h-[calc(100%-4rem)]">
       <div className="relative my-8 flex w-full justify-center">
