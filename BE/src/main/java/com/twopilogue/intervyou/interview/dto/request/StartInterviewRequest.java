@@ -13,9 +13,7 @@ public class StartInterviewRequest {
     @NotBlank
     String job;
 
-    @NotBlank
     String questionType;
-
     int questionCount;
     int InterviewType;
     List<String> questionList;

@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface InterviewSequenceRepository extends JpaRepository<InterviewSequence, Long> {
     List<InterviewSequence> findAllByInterviewIdOrderBySequence(final long interviewId);
+    void deleteAllByInterviewId(final long interviewId);
 }

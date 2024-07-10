@@ -43,7 +43,7 @@ public class InterviewController {
     @GetMapping("/{interviewId}")
     public ResponseEntity<BaseResponse> readOngoingInterview(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                                              @PathVariable final Long interviewId) {
-        return new ResponseEntity<>(BaseResponse.from(READ_ONGOING_INTERVIEW_RECORD_SUCCESS_MESSAGE, interviewService.readOngoingInterview(principalDetails.getUser(), interviewId)), HttpStatus.OK);
+        return new ResponseEntity<>(BaseResponse.from(READ_ONGOING_INTERVIEW_SUCCESS_MESSAGE, interviewService.readOngoingInterview(principalDetails.getUser(), interviewId)), HttpStatus.OK);
     }
 
     @DeleteMapping("/{interviewId}")
@@ -51,5 +51,12 @@ public class InterviewController {
                                                      @PathVariable final Long interviewId) {
         interviewService.endInterview(principalDetails.getUser(), interviewId);
         return new ResponseEntity<>(BaseResponse.from(END_INTERVIEW_MESSAGE), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/records/{interviewId}")
+    public ResponseEntity<BaseResponse> removeInterview(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                        @PathVariable final Long interviewId) {
+        interviewService.removeInterview(principalDetails.getUser(), interviewId);
+        return new ResponseEntity<>(BaseResponse.from(REMOVE_INTERVIEW_SUCCESS_MESSAGE), HttpStatus.OK);
     }
 }

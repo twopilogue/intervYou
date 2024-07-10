@@ -154,4 +154,18 @@ public class InterviewService {
         }
         interview.endInterview();
     }
+
+    public void removeInterview(final User user, final Long interviewId) {
+        final Interview interview = interviewRepository.findByIdAndUserId(interviewId, user.getId());
+        if (interview == null) {
+            throw new InterviewException(InterviewErrorResult.NOTFOUND_INTERVIEW);
+        }
+
+        if (interview.getIsActive()) {
+            throw new InterviewException(InterviewErrorResult.FAILED_REMOVE_ONGOING_INTERVIEW);
+        }
+
+        interviewSequenceRepository.deleteAllByInterviewId(interviewId);
+        interviewRepository.delete(interview);
+    }
 }
