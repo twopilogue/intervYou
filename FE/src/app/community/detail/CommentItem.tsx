@@ -11,7 +11,7 @@ export default function CommentItem({ comment }: CommentItemProps) {
   const userNickname = useAuthStore((state) => state.nickname);
   const { isDelete, nickname, commentContent, createTime, commentId, parentCommentId, depth } = comment;
 
-  function Comment() {
+  const Comment = () => {
     const replied = depth === 0;
     const isMine = nickname === userNickname;
     return (
@@ -38,7 +38,7 @@ export default function CommentItem({ comment }: CommentItemProps) {
         </div>
       </div>
     );
-  }
+  };
 
   return (
     <div className="min-w-[678px] border-b border-gray-20">

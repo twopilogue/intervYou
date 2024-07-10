@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { Button } from "../../_components/button/Button";
 
-export default function CommentInput({}) {
+interface CommentInputProps {
+  handleSave: (comment: string) => void;
+}
+
+export default function CommentInput({ handleSave }: CommentInputProps) {
   const [comment, setComment] = useState("");
 
   return (
@@ -15,7 +19,16 @@ export default function CommentInput({}) {
         onChange={(e) => setComment(e.target.value)}
       />
       <div className="flex-shrink-0">
-        <Button types={`${comment.length > 0 ? "primary" : "gray"}`} disabled={comment.length < 1} size="small">
+        <Button
+          types={`${comment.length > 0 ? "primary" : "gray"}`}
+          disabled={comment.length < 1}
+          size="small"
+          onClick={() => {
+            if (comment.length < 1) return;
+            handleSave(comment);
+            setComment("");
+          }}
+        >
           등록
         </Button>
       </div>
