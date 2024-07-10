@@ -45,6 +45,19 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
       .catch((err) => console.error(err));
   };
 
+  const handleDeleteComment = (commentId: number) => {
+    axios
+      .delete(`${BASE_URL}/api/communities/${communityInfo.communityId}/comments/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => {
+        handleGetDetail();
+      })
+      .catch((err) => console.error(err));
+  };
+
   const handleDelete = () => {
     axios
       .delete(`${BASE_URL}/api/communities/${params.pageId}`, {
@@ -96,7 +109,11 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
           {communityInfo.commentCount < 1 ? (
             <>작성된 댓글이 없습니다.</>
           ) : (
-            <>{communityInfo.comments?.map((comment, key) => <CommentItem key={key} comment={comment} />)}</>
+            <>
+              {communityInfo.comments?.map((comment, key) => (
+                <CommentItem key={key} comment={comment} handleDelete={handleDeleteComment} />
+              ))}
+            </>
           )}
         </div>
       </div>
