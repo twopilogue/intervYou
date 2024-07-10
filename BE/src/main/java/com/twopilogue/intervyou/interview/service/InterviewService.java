@@ -74,6 +74,14 @@ public class InterviewService {
         return chatGPTResponse.getChoices().get(0).getMessage().getContent();
     }
 
+    private Interview findInterview(final User user, final Long interviewId) {
+        final Interview interview = interviewRepository.findByIdAndUserId(interviewId, user.getId());
+        if (interview == null) {
+            throw new InterviewException(InterviewErrorResult.NOTFOUND_INTERVIEW);
+        }
+        return interview;
+    }
+
     public StartInterviewResponse startInterview(final User user, final StartInterviewRequest startInterviewRequest) {
 
         if (interviewRepository.existsByUserIdAndIsActiveTrue(user.getId())) {
@@ -124,26 +132,6 @@ public class InterviewService {
                 .build();
     }
 
-    public InterviewResponse readOngoingInterview(final User user, final Long interviewId) {
-        final Interview interview = interviewRepository.findByUserIdAndIsActiveTrue(user.getId());
-        if (interview == null || !interview.getId().equals(interviewId)) {
-            throw new InterviewException(InterviewErrorResult.NO_ONGOING_INTERVIEW);
-        }
-
-        final List<InterviewSequence> interviewSequenceList = interviewSequenceRepository.findAllByInterviewIdOrderBySequence(interviewId);
-        return InterviewResponse.builder()
-                .interviewId(interview.getId())
-                .createTime(localDateTimeToString(interview.getCreateTime()))
-                .interviews(interviewSequenceList.stream().map(
-                        interviewSequence -> InterviewContentResponse.builder()
-                                .sequence(interviewSequence.getSequence())
-                                .content(interviewSequence.getContent())
-                                .createTime(localDateTimeToString(interviewSequence.getCreateTime()))
-                                .build()
-                ).collect(Collectors.toList()))
-                .build();
-    }
-
     public void endInterview(final User user, final Long interviewId) {
         final Interview interview = interviewRepository.findByUserIdAndIsActiveTrue(user.getId());
         if (interview == null || !interview.getId().equals(interviewId)) {
@@ -183,6 +171,23 @@ public class InterviewService {
                                         .isActive(interview.getIsActive())
                                         .build())
                         .collect(Collectors.toList()))
+                .build();
+    }
+
+    public InterviewResponse readInterview(final User user, final Long interviewId) {
+        final Interview interview = findInterview(user, interviewId);
+        final List<InterviewSequence> interviewSequenceList = interviewSequenceRepository.findAllByInterviewIdOrderBySequence(interviewId);
+        return InterviewResponse.builder()
+                .interviewId(interview.getId())
+                .createTime(localDateTimeToString(interview.getCreateTime()))
+                .isActive(interview.getIsActive())
+                .interviews(interviewSequenceList.stream().map(
+                        interviewSequence -> InterviewContentResponse.builder()
+                                .sequence(interviewSequence.getSequence())
+                                .content(interviewSequence.getContent())
+                                .createTime(localDateTimeToString(interviewSequence.getCreateTime()))
+                                .build()
+                ).collect(Collectors.toList()))
                 .build();
     }
 }
