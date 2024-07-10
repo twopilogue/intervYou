@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import Login from "./Login";
+import Redirect from "./Redirect";
 
 export default function LoginPage({}) {
   return (
     <Suspense>
-      <Login />
+      <Redirect />
     </Suspense>
   );
 }

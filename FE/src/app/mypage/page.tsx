@@ -2,15 +2,15 @@
 
 import { useRouter } from "next/navigation";
 
-interface MenuTapProps extends HTMLElement {
+interface MenuTapProps {
   title: string;
   isLink?: boolean;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
-const MenuTab = ({ title, isLink = true, ...props }) => {
+const MenuTab = ({ title, isLink = true, onClick }: MenuTapProps) => {
   return (
-    <div className="flex cursor-pointer justify-between" {...props}>
+    <div className="flex cursor-pointer justify-between" onClick={onClick}>
       <span>{title}</span>
       {isLink && (
         <svg className="h-5 w-5 text-gray-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -31,7 +31,7 @@ export default function MyPage({}) {
           <span>님</span>
         </div>
       </div>
-      <div className="flex flex-col *:border-b *:border-gray-20 *:p-4 *:text-sm [&>*:last-child]:border-gray-40">
+      <div className="flex flex-col *:border-b *:border-gray-20 *:p-4 *:text-sm [&>*:-child]:border-gray-40">
         <MenuTab title="내가 작성한 게시글" onClick={() => router.push("/mypage/details/post")} />
         <MenuTab title="내가 작성한 댓글" onClick={() => router.push("/mypage/details/comment")} />
       </div>

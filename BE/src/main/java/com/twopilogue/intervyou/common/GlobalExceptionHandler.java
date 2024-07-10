@@ -1,6 +1,7 @@
 package com.twopilogue.intervyou.common;
 
 import com.twopilogue.intervyou.community.exception.CommunityException;
+import com.twopilogue.intervyou.interview.exception.InterviewException;
 import com.twopilogue.intervyou.user.exception.UserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -42,14 +43,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler({UserException.class})
-    public ResponseEntity<ErrorResponse> handleAuthException(final UserException exception) {
+    public ResponseEntity<ErrorResponse> handleUserException(final UserException exception) {
         log.warn("UserException occur: ", exception);
         return this.makeErrorResponseEntity(exception.getErrorResult());
     }
 
     @ExceptionHandler({CommunityException.class})
-    public ResponseEntity<ErrorResponse> handlePlannerSettingException(final CommunityException exception) {
+    public ResponseEntity<ErrorResponse> handleCommunityException(final CommunityException exception) {
         log.warn("CommunityException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getErrorResult());
+    }
+
+    @ExceptionHandler({InterviewException.class})
+    public ResponseEntity<ErrorResponse> handleInterviewException(final InterviewException exception) {
+        log.warn("InterviewException occur: ", exception);
         return this.makeErrorResponseEntity(exception.getErrorResult());
     }
 
