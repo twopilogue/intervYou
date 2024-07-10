@@ -53,6 +53,12 @@ public class InterviewController {
         return new ResponseEntity<>(BaseResponse.from(END_INTERVIEW_MESSAGE), HttpStatus.OK);
     }
 
+    @GetMapping("/records")
+    public ResponseEntity<BaseResponse> readInterviewList(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                          @RequestParam(defaultValue = "0") final long last) {
+        return new ResponseEntity<>(BaseResponse.from(READ_INTERVIEW_RECORD_LIST_SUCCESS_MESSAGE, interviewService.readInterviewList(principalDetails.getUser(), last)), HttpStatus.OK);
+    }
+
     @DeleteMapping("/records/{interviewId}")
     public ResponseEntity<BaseResponse> removeInterview(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                                         @PathVariable final Long interviewId) {
