@@ -3,13 +3,15 @@
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useAuthActions } from "../../slices/auth.slice";
+import { useAuthActions, useAuthStore } from "../../slices/auth.slice";
+import { io } from "socket.io-client";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function Redirect({}) {
   const params = useSearchParams();
   const router = useRouter();
+  const userId = useAuthStore((state) => state.userId);
   const { login } = useAuthActions();
 
   const handleLogin = async () => {
@@ -20,8 +22,17 @@ export default function Redirect({}) {
     router.push("/");
   };
 
+  const handleSocket = () => {
+    const socket = io(`${BASE_URL}/socket/notifications/${userId}`);
+
+    socket.on("connect", () => {
+      console.log(socket.id);
+    });
+  };
+
   useEffect(() => {
     handleLogin();
+    handleSocket();
   }, []);
 
   return null;
