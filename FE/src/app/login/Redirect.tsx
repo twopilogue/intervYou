@@ -19,24 +19,26 @@ export default function Redirect({}) {
     const res = await axios.get(`${BASE_URL}/api/users/login?code=${code}`);
     const { id: userId, nickname, token: accessToken } = res.data.data;
     // login(userId, nickname, accessToken);
-    handleSocket(userId);
     router.push("/");
-  };
-
-  const handleSocket = (userId: number) => {
-    const socket = new WebSocket(
-      "ws://ec2-3-35-135-21.ap-northeast-2.compute.amazonaws.com:8080/socket/notifications/" + userId,
-    );
-
-    connectSocket(socket);
-
-    socket.onopen = () => {
-      console.log("connected");
-    };
   };
 
   useEffect(() => {
     handleLogin();
+  }, []);
+
+  useEffect(() => {
+    const options = {
+      transports: ["websocket"],
+    };
+    const socket = io(`${BASE_URL}/socket/notifications/1`, options);
+
+    socket.on("connect", () => {
+      console.log("WebSocket connected.");
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   return null;
