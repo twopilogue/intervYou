@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: ['main']
+    branches: ["feature/common-issue62"]
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.AUTO_ACTIONS }}
         with:
-          source-directory: 'output'
+          source-directory: "output"
           destination-github-username: taboowiths
           destination-repository-name: intervYou
           user-email: ${{ secrets.EMAIL }}
