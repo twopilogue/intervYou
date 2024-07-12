@@ -25,7 +25,7 @@ export default function Redirect({}) {
 
   const handleSocket = (userId: number) => {
     const socket = new WebSocket(
-      "ws://http://ec2-3-35-135-21.ap-northeast-2.compute.amazonaws.com:8080/socket/notifications/" + userId,
+      "ws://ec2-3-35-135-21.ap-northeast-2.compute.amazonaws.com:8080/socket/notifications/" + userId,
     );
 
     connectSocket(socket);
