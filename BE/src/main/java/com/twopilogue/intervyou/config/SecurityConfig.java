@@ -29,7 +29,8 @@ public class SecurityConfig {
     private static final String[] PERMIT_ALL_URL_ARRAY = {
             "/api/users/login",
             "/api/communities",
-            "/api/communities/**"
+            "/api/communities/**",
+            "/socket/notifications/**"
     };
 
     @Bean
