@@ -23,7 +23,7 @@ export default function Redirect({}) {
   };
 
   const handleSocket = (userId: number) => {
-    const socket = io(`${BASE_URL}/socket/notifications/${userId}`, { transports: ["websocket", "polling"] });
+    const socket = io(`${BASE_URL}/socket/notifications/${userId}`);
     console.log(`${BASE_URL}/socket/notifications/${userId}`);
 
     socket.on("connect", () => {
