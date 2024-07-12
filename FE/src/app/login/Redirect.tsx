@@ -11,7 +11,6 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export default function Redirect({}) {
   const params = useSearchParams();
   const router = useRouter();
-  const userId = useAuthStore((state) => state.userId);
   const { login } = useAuthActions();
 
   const handleLogin = async () => {
@@ -19,10 +18,11 @@ export default function Redirect({}) {
     const res = await axios.get(`${BASE_URL}/api/users/login?code=${code}`);
     const { id: userId, nickname, token: accessToken } = res.data.data;
     login(userId, nickname, accessToken);
+    handleSocket(userId);
     router.push("/");
   };
 
-  const handleSocket = () => {
+  const handleSocket = (userId: number) => {
     const socket = io(`${BASE_URL}/socket/notifications/${userId}`, { transports: ["websocket", "polling"] });
     console.log(`${BASE_URL}/socket/notifications/${userId}`);
 
@@ -33,7 +33,6 @@ export default function Redirect({}) {
 
   useEffect(() => {
     handleLogin();
-    handleSocket();
   }, []);
 
   return null;
