@@ -2,6 +2,7 @@ name: Deploy
 
 on:
   push:
+    paths: "FE/**"
     branches: ["feature/common-issue62"]
 
 jobs:
