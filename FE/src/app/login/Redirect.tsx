@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuthActions, useAuthStore } from "../../slices/auth.slice";
 import { io } from "socket.io-client";
-import { connectSocket } from "./Socket";
+import { connectSocket, disconnectSocket } from "./Socket";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
 
@@ -27,17 +27,17 @@ export default function Redirect({}) {
   }, []);
 
   useEffect(() => {
-    const options = {
-      transports: ["websocket"],
-    };
-    const socket = io(`${BASE_URL}/socket/notifications/1`, options);
+    const socket = new WebSocket(
+      "ws://ec2-3-35-135-21.ap-northeast-2.compute.amazonaws.com:8080/socket/notifications/1",
+    );
+    connectSocket(socket);
 
-    socket.on("connect", () => {
-      console.log("WebSocket connected.");
-    });
+    socket.onopen = () => {
+      console.log("connected");
+    };
 
     return () => {
-      socket.disconnect();
+      disconnectSocket();
     };
   }, []);
 
