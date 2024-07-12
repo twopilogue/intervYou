@@ -10,7 +10,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   return (
     <html>
-      <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+      <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
       <body className="h-svh w-svw">
         {pathname === "/chat" ? <ChatHeader /> : <Header />}
         <div className="h-[calc(100%-4rem)]">{children}</div>
