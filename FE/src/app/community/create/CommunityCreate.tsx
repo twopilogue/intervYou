@@ -118,7 +118,7 @@ export default function CommunityCreate({ editTitle, editContent, communityId }:
       </div>
       {confirm && (
         <Modal open={confirm}>
-          <ModalConfirm types="save" onClose={() => setConfirm(false)} onConfirm={handleSave} />
+          <ModalConfirm types={isEdit ? "edit" : "save"} onClose={() => setConfirm(false)} onConfirm={handleSave} />
         </Modal>
       )}
     </>
