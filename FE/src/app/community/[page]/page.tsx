@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { SearchField } from "../../_components/input/SearchField";
 import CommunityFrame from "../CommunityFrame";
-import Pagination from "../Pagination";
+import Pagination from "../../_components/pagination/Pagination";
 import { Button } from "../../_components/button/Button";
 import axios from "axios";
 import { Suspense, useEffect, useState } from "react";

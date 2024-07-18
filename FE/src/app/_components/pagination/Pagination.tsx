@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { usePagination } from "../../hooks/usePagination";
+import { usePagination } from "../../../hooks/usePagination";
 
 interface PaginationProps {
   totalPageCount: number;
