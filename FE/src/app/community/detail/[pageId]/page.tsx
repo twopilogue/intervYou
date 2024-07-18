@@ -18,6 +18,59 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
   const [communityInfo, setCommunityInfo] = useState<CommunityConfig>(Object);
   const isMine = communityInfo.nickname === userNickname;
 
+  const handleGetDetail = () => {
+    axios
+      .get(`${BASE_URL}/api/communities/${params.pageId}`)
+      .then((res) => setCommunityInfo(res.data.data))
+      .catch((err) => console.error(err));
+  };
+
+  const handleSaveComment = (comment: string, parentCommendId?: number) => {
+    axios
+      .post(
+        `${BASE_URL}/api/communities/${communityInfo.communityId}/comments`,
+        {
+          parentCommentId: parentCommendId ?? null,
+          commentContent: comment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      )
+      .then(() => handleGetDetail())
+      .catch((err) => console.error(err));
+  };
+
+  const handleEditComment = (commentId: number, comment: string) => {
+    axios
+      .put(
+        `${BASE_URL}/api/communities/${communityInfo.communityId}/comments/${commentId}`,
+        {
+          commentContent: comment,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      )
+      .then(() => handleGetDetail())
+      .catch((err) => console.error(err));
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    axios
+      .delete(`${BASE_URL}/api/communities/${communityInfo.communityId}/comments/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then(() => handleGetDetail())
+      .catch((err) => console.error(err));
+  };
+
   const handleDelete = () => {
     axios
       .delete(`${BASE_URL}/api/communities/${params.pageId}`, {
@@ -25,17 +78,12 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
           Authorization: `Bearer ${accessToken}`,
         },
       })
-      .then((res) => {
-        router.push("/community");
-      })
+      .then(() => router.push("/community"))
       .catch((err) => console.error(err));
   };
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/api/communities/${params.pageId}`)
-      .then((res) => setCommunityInfo(res.data.data))
-      .catch((err) => console.error(err));
+    handleGetDetail();
   }, []);
 
   return (
@@ -66,13 +114,23 @@ export default function CommunityDetail({ params }: { params: { pageId: number }
         </div>
       </div>
       <div className="px-4">
-        <span className="block pb-4 text-sm font-bold text-gray-90">댓글</span>
-        <CommentInput />
-        <div className="flex flex-col gap-2">
+        <span className="mb-4 block border-b border-gray-40 pb-4 text-sm font-bold text-gray-90">댓글</span>
+        <CommentInput types="save" handleSave={handleSaveComment} />
+        <div className="mt-4 flex flex-col gap-2">
           {communityInfo.commentCount < 1 ? (
             <>작성된 댓글이 없습니다.</>
           ) : (
-            <>{communityInfo.comments?.map((comment, key) => <CommentItem key={key} comment={comment} />)}</>
+            <>
+              {communityInfo.comments?.map((comment, key) => (
+                <CommentItem
+                  key={key}
+                  comment={comment}
+                  handleSave={handleSaveComment}
+                  handleEdit={handleEditComment}
+                  handleDelete={handleDeleteComment}
+                />
+              ))}
+            </>
           )}
         </div>
       </div>

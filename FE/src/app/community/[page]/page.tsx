@@ -27,7 +27,7 @@ export default function Community({ params }: { params: { page: string } }) {
       .get(`${BASE_URL}/api/communities?page=${params.page}`)
       .then((res) => {
         const { totalPages, communities } = res.data.data;
-        setTotalPageCnt(totalPages);
+        setTotalPageCnt(totalPages === 0 ? 1 : totalPages);
         setCommunities(communities);
       })
       .catch((err) => console.log(err));
