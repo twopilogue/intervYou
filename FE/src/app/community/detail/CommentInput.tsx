@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { Button } from "../../_components/button/Button";
 
 interface CommentInputProps {
