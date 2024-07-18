@@ -32,8 +32,8 @@ export default function MyPage({}) {
         </div>
       </div>
       <div className="flex flex-col *:border-b *:border-gray-20 *:p-4 *:text-sm [&>*:-child]:border-gray-40">
-        <MenuTab title="내가 작성한 게시글" onClick={() => router.push("/mypage/details/post")} />
-        <MenuTab title="내가 작성한 댓글" onClick={() => router.push("/mypage/details/comment")} />
+        <MenuTab title="내가 작성한 게시글" onClick={() => router.push("/mypage/detail/post/1")} />
+        <MenuTab title="내가 작성한 댓글" onClick={() => router.push("/mypage/detail/comment/1")} />
       </div>
       <div className="flex flex-col *:border-b *:border-gray-20 *:p-4 *:text-sm [&>*:last-child]:border-gray-40">
         {/* <div>
