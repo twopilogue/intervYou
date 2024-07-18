@@ -28,6 +28,9 @@ export const theme = {
     fontFamily: {
       sans: ["Pretendard", ...fontFamily.sans],
     },
+    boxShadow: {
+      "3xl": "0 4px 14px rgb(0, 0, 0, 0.2)",
+    },
   },
 };
 export const plugins = [];

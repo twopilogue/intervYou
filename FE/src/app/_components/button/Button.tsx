@@ -2,7 +2,7 @@ import React, { ButtonHTMLAttributes, ElementType, ReactNode } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: string | ReactNode;
-  types?: "primary" | "secondary" | "gray";
+  types?: "primary" | "secondary" | "gray" | "danger";
   backgroundColor?: string;
   size?: "small" | "medium" | "large";
   as?: ElementType;
@@ -13,17 +13,18 @@ const buttonConfig = {
   primary: {
     bgColor: "bg-primary",
     color: "text-white",
-    outline: "border-primary-500 text-primary-500 bg-opacity-0 hover:bg-opacity-10",
   },
   secondary: {
     bgColor: "bg-secondary",
     color: "text-gray-90",
-    outline: "border-secondary-500 text-secondary-500 bg-opacity-0 hover:bg-opacity-10",
   },
   gray: {
     bgColor: "bg-gray-30",
     color: "text-gray-60",
-    outline: "border-secondary-500 text-secondary-500 bg-opacity-0 hover:bg-opacity-10",
+  },
+  danger: {
+    bgColor: "bg-danger-base",
+    color: "text-white",
   },
 
   // Sizes
