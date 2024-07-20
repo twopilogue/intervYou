@@ -3,11 +3,11 @@
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useAuthActions, useAuthStore } from "../../slices/auth.slice";
-import { io } from "socket.io-client";
-import { connectSocket, disconnectSocket } from "./Socket";
+import { useAuthActions } from "../../slices/auth.slice";
+import { connectSocket } from "./Socket";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL!;
 
 export default function Redirect({}) {
   const params = useSearchParams();
@@ -24,9 +24,7 @@ export default function Redirect({}) {
   };
 
   const handleSocket = (userId: number) => {
-    const socket = new WebSocket(
-      "ws://ec2-3-35-135-21.ap-northeast-2.compute.amazonaws.com:8080/socket/notifications/1",
-    );
+    const socket = new WebSocket(`${SOCKET_URL}${userId}`);
     connectSocket(socket);
 
     socket.onopen = () => {
