@@ -7,7 +7,7 @@ import { useAuthActions } from "../../slices/auth.slice";
 import { connectSocket } from "./Socket";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL!;
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL!;
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
 
 export default function Redirect({}) {
   const params = useSearchParams();
