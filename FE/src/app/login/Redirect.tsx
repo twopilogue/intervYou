@@ -18,12 +18,9 @@ export default function Redirect({}) {
     const code = params.get("code");
     const res = await axios.get(`${BASE_URL}/api/users/login?code=${code}`);
     const { id: userId, nickname, token: accessToken } = res.data.data;
-    login(userId, nickname, accessToken)
-      .then(() => {
-        handleSocket(userId);
-        router.push("/");
-      })
-      .catch((err) => console.error(err));
+    await login(userId, nickname, accessToken);
+    handleSocket(userId);
+    router.push("/");
   };
 
   const handleSocket = (userId: number) => {
