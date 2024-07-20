@@ -18,13 +18,14 @@ export default function Redirect({}) {
     const code = params.get("code");
     const res = await axios.get(`${BASE_URL}/api/users/login?code=${code}`);
     const { id: userId, nickname, token: accessToken } = res.data.data;
-    // login(userId, nickname, accessToken);
+    login(userId, nickname, accessToken);
     handleSocket(userId);
     router.push("/");
   };
 
   const handleSocket = (userId: number) => {
     const socket = new WebSocket(`${SOCKET_URL}${userId}`);
+    console.log(`연결 주소: ${SOCKET_URL}${userId}`);
     connectSocket(socket);
 
     socket.onopen = () => {
