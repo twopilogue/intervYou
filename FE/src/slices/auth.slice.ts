@@ -11,7 +11,7 @@ interface AuthState {
 
 interface AuthAction {
   actions: {
-    login: (userId: number, nickname: string, accessToken: string) => Promise<void>;
+    login: (userId: number, nickname: string, accessToken: string) => void;
     logout: () => void;
   };
 }
