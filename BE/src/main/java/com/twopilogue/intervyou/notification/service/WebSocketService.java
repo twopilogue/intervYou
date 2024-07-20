@@ -24,7 +24,7 @@ public class WebSocketService {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("userId") Long userId) {
-        if (!userId.equals("undefined") && !users.contains(session)) {
+        if (userId != null && !users.contains(session)) {
             System.out.println("들어옴 userId: " + userId + ", session: " + session);
             users.add(session);
             userInfos.put(session.getId(), userId);
