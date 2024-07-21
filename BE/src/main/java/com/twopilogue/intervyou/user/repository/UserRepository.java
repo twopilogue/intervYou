@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByNaverIdTokenAndWithdrawalTimeIsNull(final String naverIdToken);
+    User findByIdAndWithdrawalTimeIsNull(final Long userId);
     boolean existsByNickname(final String nickname);
 }
