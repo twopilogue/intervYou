@@ -11,6 +11,7 @@ import com.twopilogue.intervyou.community.exception.CommunityErrorResult;
 import com.twopilogue.intervyou.community.exception.CommunityException;
 import com.twopilogue.intervyou.community.repositiry.CommentRepository;
 import com.twopilogue.intervyou.community.repositiry.CommunityRepository;
+import com.twopilogue.intervyou.notification.service.NotificationService;
 import com.twopilogue.intervyou.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,9 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +32,7 @@ public class CommunityService {
 
     private final CommunityRepository communityRepository;
     private final CommentRepository commentRepository;
+    private final NotificationService notificationService;
 
     private String localDateTimeToString(final LocalDateTime time) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -160,23 +160,8 @@ public class CommunityService {
     }
 
     public CommentResponse writeComment(final User user, final long communityId, final WriteCommentRequest writeCommentRequest) {
-        existValidCommunity(communityId);
-        int depth = 0;
-        if (writeCommentRequest.getParentCommentId() != null) {
-            final Comment parentComment = commentRepository.findByIdAndCommunityIdAndDeleteTimeIsNull(writeCommentRequest.getParentCommentId(), communityId);
-            if (parentComment == null) {
-                throw new CommunityException(CommunityErrorResult.INVALID_COMMENT);
-            }
-            depth = parentComment.getDepth() + 1;
-        }
-
-        final Comment comment = commentRepository.save(Comment.builder()
-                .communityId(communityId)
-                .parentCommentId(writeCommentRequest.getParentCommentId())
-                .commentContent(writeCommentRequest.getCommentContent())
-                .nickname(user.getNickname())
-                .depth(depth)
-                .build());
+        final Comment comment = makeNewComment(user, communityId, writeCommentRequest);
+        sendNewNotification(communityId, comment);
 
         return CommentResponse.builder()
                 .isDelete(false)
@@ -187,6 +172,39 @@ public class CommunityService {
                 .depth(comment.getDepth())
                 .createTime(localDateTimeToString(comment.getCreateTime()))
                 .build();
+    }
+
+    private Comment makeNewComment(final User user, final long communityId, final WriteCommentRequest writeCommentRequest) {
+        existValidCommunity(communityId);
+        int depth = 0;
+        if (writeCommentRequest.getParentCommentId() != null) {
+            final Comment parentComment = commentRepository.findByIdAndCommunityIdAndDeleteTimeIsNull(writeCommentRequest.getParentCommentId(), communityId);
+            if (parentComment == null) {
+                throw new CommunityException(CommunityErrorResult.INVALID_COMMENT);
+            }
+            depth = parentComment.getDepth() + 1;
+        }
+        return commentRepository.save(Comment.builder()
+                .communityId(communityId)
+                .parentCommentId(writeCommentRequest.getParentCommentId())
+                .commentContent(writeCommentRequest.getCommentContent())
+                .nickname(user.getNickname())
+                .depth(depth)
+                .build());
+    }
+
+    private void sendNewNotification(final long communityId, Comment comment) {
+        final Community community = communityRepository.findById(communityId).get();
+        final Set<String> nicknames = new HashSet<>();
+        nicknames.add(community.getNickname());
+        nicknames.add(comment.getNickname());
+        while (comment.getParentCommentId() != null) {
+            comment = commentRepository.findByIdAndCommunityIdAndDeleteTimeIsNull(comment.getParentCommentId(), communityId);
+            if (comment == null) break;
+            if (nicknames.contains(comment.getNickname())) continue;
+            nicknames.add(comment.getNickname());
+        }
+        notificationService.sendNewNotification(community, nicknames);
     }
 
     public void modifyComment(final User user, final long communityId, final long commentId, final ModifyCommentRequest modifyCommentRequest) {
