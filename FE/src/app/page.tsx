@@ -4,7 +4,7 @@ import Bubble from "./chat/_components/Bubble";
 
 const HomePage = () => {
   return (
-    <div className="box-border flex h-full items-center gap-16 pl-48 pr-80">
+    <div className="box-border flex h-full items-center gap-16 px-48">
       <div className="flex w-1/2 flex-col gap-8">
         <div>
           <div className="mb-4 text-4xl font-bold text-primary *:block">
