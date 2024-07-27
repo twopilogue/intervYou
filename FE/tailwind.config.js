@@ -28,6 +28,28 @@ export const theme = {
     fontFamily: {
       sans: ["Pretendard", ...fontFamily.sans],
     },
+    keyframes: {
+      "slide-left": {
+        from: {
+          transform: "translateX(100px)",
+        },
+        to: {
+          transform: "translateX(0)",
+        },
+      },
+      "slide-right": {
+        from: {
+          transform: "translateX(0)",
+        },
+        to: {
+          transform: "translateX(100px)",
+        },
+      },
+    },
+    animation: {
+      "slide-left": "slide-left 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both",
+      "slide-right": "slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both",
+    },
     boxShadow: {
       "3xl": "0 4px 14px rgb(0, 0, 0, 0.2)",
     },

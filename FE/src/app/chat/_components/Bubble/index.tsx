@@ -4,11 +4,12 @@ interface Props {
   content: string;
   isMine: boolean;
   isFinished: boolean;
+  classProps?: string;
 }
 
-export default function Bubble({ content, isMine, isFinished }: Props) {
+export default function Bubble({ content, isMine, isFinished, classProps }: Props) {
   return (
-    <div className={`${isMine && "self-end"} flex min-w-min max-w-xl flex-col gap-2`}>
+    <div className={`${isMine && "self-end"} flex min-w-min max-w-xl flex-col gap-2 ${classProps}`}>
       <div className="flex items-end gap-2">
         <div
           className={`${isMine ? "order-2 rounded-tr-none bg-lightblue" : "order-1 rounded-tl-none bg-secondary"} flex rounded-3xl p-5`}
