@@ -15,7 +15,7 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div className="box-border flex h-full items-center gap-16 pl-48 pr-80">
+    <div className="box-border flex h-full items-center gap-16 px-48">
       <div className="flex w-1/2 flex-col gap-8">
         <div>
           <div className="mb-4 text-4xl font-bold text-primary *:block">
@@ -39,7 +39,7 @@ const HomePage = () => {
               isFinished={false}
               isMine={index % 2 === 0 ? true : false}
               content="어쩌고"
-              classProps={`opacity-0 ${visibleEle.includes(index) ? "animate-[slide-right_1s_forwards]" : ""}`}
+              classProps={`opacity-0 ${visibleEle.includes(index) ? `animate-[slide-${index % 2 === 0 ? "left" : "right"}_1s_forwards]` : ""}`}
             />
           );
         })}
