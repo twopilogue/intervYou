@@ -1,10 +1,21 @@
-import Link from "next/link";
+"use client";
 import { Button } from "./_components/button/Button";
 import Bubble from "./chat/_components/Bubble";
+import { useEffect, useState } from "react";
 
 const HomePage = () => {
+  const [visibleEle, setVisibleEle] = useState<any[]>([]);
+
+  useEffect(() => {
+    Array.from([1, 2, 3, 4, 5]).forEach((_, index) => {
+      setTimeout(() => {
+        setVisibleEle((prev: any) => [...prev, index]);
+      }, index * 500);
+    });
+  }, []);
+
   return (
-    <div className="box-border flex h-full items-center gap-16 px-48">
+    <div className="box-border flex h-full items-center gap-16 pl-48 pr-80">
       <div className="flex w-1/2 flex-col gap-8">
         <div>
           <div className="mb-4 text-4xl font-bold text-primary *:block">
@@ -21,21 +32,17 @@ const HomePage = () => {
         </div>
       </div>
       <div className="flex w-1/2 flex-col">
-        <Bubble isFinished={false} isMine content="어쩌고" classProps="animate-[slide-left_1s_100ms_forwards]" />
-        <Bubble
-          isFinished={false}
-          isMine={false}
-          content="어쩌고"
-          classProps="animate-[slide-right_1s_200ms_forwards]"
-        />
-        <Bubble isFinished={false} isMine content="어쩌고" classProps="animate-[slide-left_1s_300ms]" />
-        <Bubble
-          isFinished={false}
-          isMine={false}
-          content="어쩌고"
-          classProps="animate-[slide-right_1s_400ms_forwards]"
-        />
-        <Bubble isFinished={false} isMine content="어쩌고" classProps="animate-[slide-left_1s_500ms]" />
+        {Array.from([1, 2, 3, 4, 5]).map((_, index) => {
+          return (
+            <Bubble
+              key={index}
+              isFinished={false}
+              isMine={index % 2 === 0 ? true : false}
+              content="어쩌고"
+              classProps={`opacity-0 ${visibleEle.includes(index) ? "animate-[slide-right_1s_forwards]" : ""}`}
+            />
+          );
+        })}
       </div>
     </div>
   );
